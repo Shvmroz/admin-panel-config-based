@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { MoreHorizontal, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { MoveHorizontal as MoreHorizontal, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import Button from './Button';
 
 const Table = ({ config }) => {

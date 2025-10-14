@@ -3,22 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { cn } from "../lib/utils";
 
-import {
-  Building2,
-  BarChart3,
-  Settings,
-  Home,
-  Building,
-  CreditCard,
-  Mail,
-  Receipt,
-  Wrench,
-  Calendar,
-  Users,
-  Network,
-  MonitorCog,
-  UserCog,
-} from "lucide-react";
+import { Building2, ChartBar as BarChart3, Settings, Chrome as Home, Building, CreditCard, Mail, Receipt, Wrench, Calendar, Users, Network, MonitorCog, UserCog } from "lucide-react";
 
 const menuItems = [
   {
