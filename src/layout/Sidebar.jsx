@@ -27,41 +27,6 @@ const menuItems = [
     color: "text-green-500",
     bgColor: "bg-green-50",
   },
-  {
-    text: "Organizations",
-    icon: Building2,
-    path: "/organizations",
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
-  },
-  {
-    text: "Companies",
-    icon: Building,
-    path: "/companies",
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
-  },
-  {
-    text: "Events",
-    icon: Calendar,
-    path: "/events",
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
-  },
-  {
-    text: "Analytics",
-    icon: BarChart3,
-    path: "/analytics",
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
-  },
-  {
-    text: "Settings",
-    icon: Wrench,
-    path: "/settings",
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
-  },
 ];
 
 const Sidebar = ({ open, onClose, variant = "temporary" }) => {

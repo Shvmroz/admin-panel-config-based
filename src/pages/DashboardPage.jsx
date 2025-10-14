@@ -1,13 +1,11 @@
 import React from "react";
 import {
-  Calendar,
-  Building2,
   TrendingUp,
   DollarSign,
   CreditCard,
   ChevronRight,
-  Building,
   User,
+  UserCog,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
@@ -78,22 +76,6 @@ const DashboardPage = () => {
 
   const metrics = [
     {
-      title: "Total Organizations",
-      value: data.total_organizations,
-      icon: <Building2 className="w-5 h-5" />,
-      color: "text-sky-600",
-      bgColor: "bg-sky-50 dark:bg-sky-900/20",
-      path: "/organizations",
-    },
-    {
-      title: "Total Companies",
-      value: data.total_companies,
-      icon: <Building className="w-5 h-5" />,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50 dark:bg-purple-900/20",
-      path: "/companies",
-    },
-    {
       title: "Total Users",
       value: data.total_users,
       icon: <User className="w-5 h-5" />,
@@ -102,12 +84,20 @@ const DashboardPage = () => {
       path: "/users",
     },
     {
+      title: "Total Admins",
+      value: 15,
+      icon: <UserCog className="w-5 h-5" />,
+      color: "text-purple-600",
+      bgColor: "bg-purple-50 dark:bg-purple-900/20",
+      path: "/admins",
+    },
+    {
       title: "Active Subscriptions",
       value: data.active_subscriptions,
       icon: <CreditCard className="w-5 h-5" />,
       color: "text-indigo-600",
       bgColor: "bg-indigo-50 dark:bg-indigo-900/20",
-      path: "/analytics",
+      path: "/dashboard",
     },
     {
       title: "Monthly Revenue",
@@ -115,7 +105,7 @@ const DashboardPage = () => {
       icon: <TrendingUp className="w-5 h-5" />,
       color: "text-orange-600",
       bgColor: "bg-orange-50 dark:bg-orange-900/20",
-      path: "/analytics",
+      path: "/dashboard",
     },
     {
       title: "Total Revenue",
@@ -123,7 +113,7 @@ const DashboardPage = () => {
       icon: <DollarSign className="w-5 h-5" />,
       color: "text-emerald-600",
       bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
-      path: "/analytics",
+      path: "/dashboard",
     },
   ];
 
@@ -142,10 +132,10 @@ const DashboardPage = () => {
           className="hidden sm:flex space-x-2 items-center"
           variant="contained"
           color="primary"
-          onClick={() => navigate("/analytics")}
+          onClick={() => navigate("/dashboard")}
         >
           <TrendingUp className="w-4 h-4" />
-          <span>View Analytics</span>
+          <span>Refresh Dashboard</span>
         </Button>
       </div>
 
@@ -165,7 +155,7 @@ const DashboardPage = () => {
             Top Organizations
           </h2>
           <span
-            onClick={() => navigate("/organizations")}
+            onClick={() => navigate("/users")}
             className="flex items-center space-x-1 text-blue-500 hover:text-blue-600 text-sm font-medium cursor-pointer"
           >
             <span>View All</span>
