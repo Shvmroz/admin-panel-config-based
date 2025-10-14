@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { cn } from "../lib/utils";
 
 import {
   Building2,
@@ -17,13 +17,8 @@ import {
   Users,
   Network,
   MonitorCog,
+  UserCog,
 } from "lucide-react";
-
-interface SidebarProps {
-  open: boolean;
-  onClose: () => void;
-  variant?: "permanent" | "temporary";
-}
 
 const menuItems = [
   {
@@ -34,18 +29,18 @@ const menuItems = [
     bgColor: "bg-blue-50",
   },
   {
-    text: "My Team",
-    icon: Network,
-    path: "/team",
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
+    text: "Admins",
+    icon: UserCog,
+    path: "/admins",
+    color: "text-purple-500",
+    bgColor: "bg-purple-50",
   },
   {
-    text: "Payment Plans",
-    icon: Receipt,
-    path: "/payment-plans",
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
+    text: "Users",
+    icon: Users,
+    path: "/users",
+    color: "text-green-500",
+    bgColor: "bg-green-50",
   },
   {
     text: "Organizations",
@@ -69,44 +64,9 @@ const menuItems = [
     bgColor: "bg-blue-50",
   },
   {
-    text: "Users",
-    icon: Users,
-    path: "/users",
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
-  },
-  {
-    text: "Email Templates",
-    icon: Mail,
-    path: "/email-templates",
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
-  },
-  {
     text: "Analytics",
     icon: BarChart3,
     path: "/analytics",
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
-  },
-  {
-    text: "General Configuration",
-    icon: Settings,
-    path: "/configuration",
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
-  },
-  {
-    text: "Stripe Configuration",
-    icon: CreditCard,
-    path: "/configuration/stripe",
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
-  },
-  {
-    text: "Email Configuration",
-    icon: MonitorCog,
-    path: "/configuration/email",
     color: "text-blue-500",
     bgColor: "bg-blue-50",
   },
@@ -119,18 +79,12 @@ const menuItems = [
   },
 ];
 
-
-const Sidebar: React.FC<SidebarProps> = ({
-  open,
-  onClose,
-  variant = "temporary",
-}) => {
+const Sidebar = ({ open, onClose, variant = "temporary" }) => {
   const location = useLocation();
   const pathname = location.pathname;
 
   const sidebarContent = (
     <div className="h-full flex flex-col bg-white dark:bg-gray-900 shadow-xl border-r border-gray-200 dark:border-gray-700">
-      {/* Header */}
       <Link to="/dashboard">
         <div className="cursor-pointer h-16 pl-8 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-3">
           <img 
@@ -138,14 +92,13 @@ const Sidebar: React.FC<SidebarProps> = ({
             alt="ExiBy Logo" 
             className="w-8 h-8 object-contain"
           />
-          <h1 className=" text-gray-900 dark:text-white text-2xl font-extrabold leading-tight mt-1">
+          <h1 className="text-gray-900 dark:text-white text-2xl font-extrabold leading-tight mt-1">
             EXIBY
           </h1>
         </div>
       </Link>
 
-      {/* Navigation */}
-      <div className="flex-1 py-4 px-4 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
+      <div className="flex-1 py-4 px-4 space-y-1 overflow-y-auto">
         {menuItems.map((item) => {
           const isActive = pathname === item.path;
           const Icon = item.icon;
@@ -191,7 +144,6 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <>
-      {/* Mobile Overlay */}
       {open && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
@@ -199,7 +151,6 @@ const Sidebar: React.FC<SidebarProps> = ({
         />
       )}
 
-      {/* Mobile Sidebar */}
       <div
         className={cn(
           "fixed inset-y-0 left-0 w-80 z-50 lg:hidden",

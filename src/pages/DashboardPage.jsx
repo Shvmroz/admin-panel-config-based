@@ -1,0 +1,204 @@
+import React from "react";
+import {
+  Calendar,
+  Building2,
+  TrendingUp,
+  DollarSign,
+  CreditCard,
+  ChevronRight,
+  Building,
+  User,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import Button from "../components/ui/Button";
+
+const dashboardData = {
+  data: {
+    total_organizations: 150,
+    total_companies: 300,
+    total_revenue: 250000,
+    monthly_revenue: 45000,
+    total_users: 300,
+    active_subscriptions: 145,
+    top_organizations: [
+      {
+        _id: "org_456",
+        name: "TechCorp Events",
+        total_events: 25,
+        total_revenue: 50000,
+      },
+      {
+        _id: "org_789",
+        name: "Innovation Labs",
+        total_events: 18,
+        total_revenue: 35000,
+      },
+      {
+        _id: "org_123",
+        name: "StartupHub",
+        total_events: 15,
+        total_revenue: 28000,
+      },
+    ],
+  },
+};
+
+const MetricCard = ({ title, value, icon, color, bgColor, onClick }) => (
+  <div
+    onClick={onClick}
+    className={`${bgColor} dark:bg-gray-800 rounded-xl px-6 py-3 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-200 hover:-translate-y-1 cursor-pointer relative overflow-hidden group`}
+  >
+    <div className="absolute top-1 right-1 w-20 h-20 opacity-10 transform rotate-12">
+      {React.cloneElement(icon, {
+        className: `w-full h-full ${color}`,
+      })}
+    </div>
+
+    <div className="flex items-start justify-between relative z-10">
+      <div className="flex-1">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className={color}>{icon}</div>
+          <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">
+            {title}
+          </p>
+        </div>
+        <div className="space-y-2">
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+            {typeof value === "number" ? value.toLocaleString() : value}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const DashboardPage = () => {
+  const navigate = useNavigate();
+  const { data } = dashboardData;
+
+  const metrics = [
+    {
+      title: "Total Organizations",
+      value: data.total_organizations,
+      icon: <Building2 className="w-5 h-5" />,
+      color: "text-sky-600",
+      bgColor: "bg-sky-50 dark:bg-sky-900/20",
+      path: "/organizations",
+    },
+    {
+      title: "Total Companies",
+      value: data.total_companies,
+      icon: <Building className="w-5 h-5" />,
+      color: "text-purple-600",
+      bgColor: "bg-purple-50 dark:bg-purple-900/20",
+      path: "/companies",
+    },
+    {
+      title: "Total Users",
+      value: data.total_users,
+      icon: <User className="w-5 h-5" />,
+      color: "text-red-600",
+      bgColor: "bg-red-50 dark:bg-red-900/20",
+      path: "/users",
+    },
+    {
+      title: "Active Subscriptions",
+      value: data.active_subscriptions,
+      icon: <CreditCard className="w-5 h-5" />,
+      color: "text-indigo-600",
+      bgColor: "bg-indigo-50 dark:bg-indigo-900/20",
+      path: "/analytics",
+    },
+    {
+      title: "Monthly Revenue",
+      value: `$${data.monthly_revenue.toLocaleString()}`,
+      icon: <TrendingUp className="w-5 h-5" />,
+      color: "text-orange-600",
+      bgColor: "bg-orange-50 dark:bg-orange-900/20",
+      path: "/analytics",
+    },
+    {
+      title: "Total Revenue",
+      value: `$${data.total_revenue.toLocaleString()}`,
+      icon: <DollarSign className="w-5 h-5" />,
+      color: "text-emerald-600",
+      bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
+      path: "/analytics",
+    },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Dashboard Overview
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            Monitor your platform performance and key metrics
+          </p>
+        </div>
+        <Button
+          className="hidden sm:flex space-x-2 items-center"
+          variant="contained"
+          color="primary"
+          onClick={() => navigate("/analytics")}
+        >
+          <TrendingUp className="w-4 h-4" />
+          <span>View Analytics</span>
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {metrics.map((metric, i) => (
+          <MetricCard
+            key={i}
+            {...metric}
+            onClick={() => navigate(metric.path)}
+          />
+        ))}
+      </div>
+
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100 dark:border-gray-700">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+            Top Organizations
+          </h2>
+          <span
+            onClick={() => navigate("/organizations")}
+            className="flex items-center space-x-1 text-blue-500 hover:text-blue-600 text-sm font-medium cursor-pointer"
+          >
+            <span>View All</span>
+            <ChevronRight className="w-4 h-4" />
+          </span>
+        </div>
+        <div className="p-6">
+          <div className="space-y-4">
+            {data.top_organizations.map((org, i) => (
+              <div key={org._id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                    #{i + 1}
+                  </span>
+                  <div>
+                    <h3 className="font-medium text-gray-900 dark:text-white">
+                      {org.name}
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {org.total_events} events
+                    </p>
+                  </div>
+                </div>
+                <div className="text-green-600 dark:text-green-400 font-semibold">
+                  ${org.total_revenue.toLocaleString()}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DashboardPage;
