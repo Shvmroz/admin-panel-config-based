@@ -1,6 +1,6 @@
 import React from "react";
 import { Eye, Pencil, Trash2, User } from "lucide-react";
-import CrudPage from "./crud/CrudPage";
+import CrudPage from "./CRUD/CrudPage";
 
 // 🧩 TABLE CONFIG
 const adminTableConfig = {
