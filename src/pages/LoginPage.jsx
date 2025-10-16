@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mail, Lock, Calendar } from "lucide-react";
 import { useAppContext } from "../contexts/AppContext";
-import { Input } from "../components/ui/Input";
-import Button from "../components/ui/Button";
+import { Input } from "../components/Input";
+import Button from "../components/Button";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
