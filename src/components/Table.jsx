@@ -228,13 +228,13 @@ const Table = ({ config }) => {
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider"
+                  className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider"
                 >
                   {col.title}
                 </th>
               ))}
               {actions.length > 0 && (
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-4 text-right text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                   Actions
                 </th>
               )}
@@ -260,7 +260,7 @@ const Table = ({ config }) => {
                   {columns.map((col) => (
                     <td
                       key={col.key}
-                      className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 whitespace-nowrap"
+                      className="px-6 py-5 text-sm text-gray-900 dark:text-gray-100"
                     >
                       {col.render
                         ? col.render(item[col.key], item)
@@ -269,7 +269,7 @@ const Table = ({ config }) => {
                   ))}
 
                   {actions.length > 0 && (
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-6 py-5 text-right">
                       <button
                         ref={el => buttonRefs.current[item.id] = el}
                         onClick={(e) => handleMenuToggle(item.id, e)}
