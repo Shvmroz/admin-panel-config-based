@@ -1,9 +1,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import Button from '../Button';
-import FilterContent from './FilterContent';
 
-const FilterSidebar = ({ isOpen, onClose, config, onApply }) => {
+const FilterSidebar = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
 
   return (
@@ -27,7 +25,7 @@ const FilterSidebar = ({ isOpen, onClose, config, onApply }) => {
           </div>
 
           <div className="flex-1 overflow-y-auto p-4">
-            <FilterContent config={config} onApply={onApply} onClose={onClose} />
+            {children}
           </div>
         </div>
       </div>

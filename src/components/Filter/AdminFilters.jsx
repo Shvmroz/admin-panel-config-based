@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from '../Button';
 import { Input } from '../Input';
 
-const FilterContent = ({ config, onApply }) => {
+const AdminFilters = ({ config, onApply, onClose }) => {
   const [filters, setFilters] = useState({});
 
   const handleChange = (key, value) => {
@@ -73,4 +73,4 @@ const FilterContent = ({ config, onApply }) => {
   );
 };
 
-export default FilterContent;
+export default AdminFilters;

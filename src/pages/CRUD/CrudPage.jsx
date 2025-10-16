@@ -10,12 +10,13 @@ const CrudPage = ({ config }) => {
   const {
     title = 'Data Management',
     description = 'Manage your data with ease',
-    table = {},
-    form = {},
+    tableConfig = {},
+    formConfig = {},
     data = [],
     loading = false,
     modals = {},
     handlers = {},
+    FilterComponent = null,
     filterConfig = null,
     showFilterSidebar = false
   } = config;
@@ -28,9 +29,9 @@ const CrudPage = ({ config }) => {
           <p className="text-gray-600 dark:text-gray-400 mt-1">{description}</p>
         </div>
         <div className="flex items-center space-x-3">
-          {filterConfig && (
+          {FilterComponent && (
             <Button
-              onClick={handlers.onFilterOpen}
+              onClick={() => handlers.onFilterToggle?.()}
               variant="outlined"
             >
               <Filter className="w-4 h-4 mr-2" />
@@ -48,38 +49,41 @@ const CrudPage = ({ config }) => {
         </div>
       </div>
 
-      <Table config={{ ...table, data, loading }} />
+      <Table config={{ ...tableConfig, data, loading }} />
 
-      {filterConfig && (
+      {FilterComponent && (
         <FilterSidebar
           isOpen={showFilterSidebar}
-          onClose={handlers.onFilterClose}
-          config={filterConfig}
-          onApply={handlers.onFilterApply}
-        />
+          onClose={() => handlers.onFilterToggle?.()}
+        >
+          <FilterComponent
+            config={filterConfig}
+            onApply={handlers.onFilterApply}
+          />
+        </FilterSidebar>
       )}
 
       <Modal
-        isOpen={modals.showAddModal}
-        onClose={handlers.onAddModalClose}
+        isOpen={modals.showAdd}
+        onClose={() => handlers.onModalClose?.('add')}
         title={`Add New ${title.replace(' Management', '')}`}
         size="lg"
       >
         <Form
-          config={form.add}
+          config={formConfig.add}
           onSubmit={handlers.onSubmit}
           loading={modals.formLoading}
         />
       </Modal>
 
       <Modal
-        isOpen={modals.showEditModal}
-        onClose={handlers.onEditModalClose}
+        isOpen={modals.showEdit}
+        onClose={() => handlers.onModalClose?.('edit')}
         title={`Edit ${title.replace(' Management', '')}`}
         size="lg"
       >
         <Form
-          config={form.edit}
+          config={formConfig.edit}
           onSubmit={handlers.onSubmit}
           initialData={modals.selectedItem}
           loading={modals.formLoading}
@@ -87,14 +91,14 @@ const CrudPage = ({ config }) => {
       </Modal>
 
       <Modal
-        isOpen={modals.showDeleteModal}
-        onClose={handlers.onDeleteModalClose}
+        isOpen={modals.showDelete}
+        onClose={() => handlers.onModalClose?.('delete')}
         title="Confirm Delete"
         actions={
           <>
             <Button
               variant="outlined"
-              onClick={handlers.onDeleteModalClose}
+              onClick={() => handlers.onModalClose?.('delete')}
               disabled={modals.formLoading}
             >
               Cancel
@@ -102,7 +106,7 @@ const CrudPage = ({ config }) => {
             <Button
               variant="contained"
               color="error"
-              onClick={handlers.onDeleteConfirm}
+              onClick={handlers.onDelete}
               disabled={modals.formLoading}
             >
               {modals.formLoading ? 'Deleting...' : 'Delete'}

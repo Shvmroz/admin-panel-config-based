@@ -2,15 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
 import { Eye, Pencil, Trash2, User } from "lucide-react";
 import CrudPage from "./CRUD/CrudPage";
+import AdminFilters from "../components/Filter/AdminFilters";
 import { adminMockData } from "../data/admins";
 
 const AdminsPage = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAdd, setShowAdd] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
@@ -34,21 +35,35 @@ const AdminsPage = () => {
 
   const handleAdd = () => {
     setSelectedItem(null);
-    setShowAddModal(true);
+    setShowAdd(true);
   };
 
   const handleEdit = (item) => {
     setSelectedItem(item);
-    setShowEditModal(true);
+    setShowEdit(true);
   };
 
   const handleDelete = (item) => {
     setSelectedItem(item);
-    setShowDeleteModal(true);
+    setShowDelete(true);
   };
 
   const handleView = (item) => {
     enqueueSnackbar(`Viewing details for ${item.name}`, { variant: 'info' });
+  };
+
+  const handleModalClose = (type) => {
+    switch (type) {
+      case 'add':
+        setShowAdd(false);
+        break;
+      case 'edit':
+        setShowEdit(false);
+        break;
+      case 'delete':
+        setShowDelete(false);
+        break;
+    }
   };
 
   const handleFormSubmit = async (formData) => {
@@ -61,7 +76,7 @@ const AdminsPage = () => {
           item.id === selectedItem.id ? { ...item, ...formData } : item
         ));
         enqueueSnackbar('Admin updated successfully', { variant: 'success' });
-        setShowEditModal(false);
+        setShowEdit(false);
       } else {
         const newItem = {
           ...formData,
@@ -71,7 +86,7 @@ const AdminsPage = () => {
         };
         setData(prev => [newItem, ...prev]);
         enqueueSnackbar('Admin added successfully', { variant: 'success' });
-        setShowAddModal(false);
+        setShowAdd(false);
       }
     } catch (error) {
       enqueueSnackbar('Operation failed', { variant: 'error' });
@@ -87,7 +102,7 @@ const AdminsPage = () => {
 
       setData(prev => prev.filter(item => item.id !== selectedItem.id));
       enqueueSnackbar('Admin deleted successfully', { variant: 'success' });
-      setShowDeleteModal(false);
+      setShowDelete(false);
     } catch (error) {
       enqueueSnackbar('Delete failed', { variant: 'error' });
     } finally {
@@ -97,6 +112,10 @@ const AdminsPage = () => {
 
   const handleFilterApply = (appliedFilters) => {
     setFilters(appliedFilters);
+  };
+
+  const handleFilterToggle = () => {
+    setShowFilterSidebar(prev => !prev);
   };
 
   const filteredData = React.useMemo(() => {
@@ -119,10 +138,10 @@ const AdminsPage = () => {
     return result;
   }, [data, filters]);
 
-  const adminTableConfig = {
+  const tableConfig = {
     search: { enabled: true, placeholder: "Search admins..." },
     pagination: { enabled: true, pageSize: 10 },
-    columns: [
+    table_head: [
       { key: "id", title: "ID" },
       {
         key: "user",
@@ -192,7 +211,7 @@ const AdminsPage = () => {
       { key: "lastLogin", title: "Last Login" },
       { key: "createdAt", title: "Created Date" },
     ],
-    actions: [
+    menu_actions: [
       {
         title: "Edit Admin",
         type: "edit",
@@ -215,9 +234,9 @@ const AdminsPage = () => {
     ],
   };
 
-  const adminFormConfig = {
+  const formConfig = {
     add: {
-      fields: [
+      input_fields: [
         { key: "name", label: "Full Name", type: "text", required: true },
         { key: "email", label: "Email Address", type: "email", required: true },
         { key: "password", label: "Password", type: "password", required: true },
@@ -253,10 +272,10 @@ const AdminsPage = () => {
           placeholder: "Additional information about this admin...",
         },
       ],
-      submitText: "Create Admin",
+      submitButtonText: "Create Admin",
     },
     edit: {
-      fields: [
+      input_fields: [
         { key: "name", label: "Full Name", type: "text", required: true },
         { key: "email", label: "Email Address", type: "email", required: true },
         {
@@ -291,7 +310,7 @@ const AdminsPage = () => {
           placeholder: "Additional information about this admin...",
         },
       ],
-      submitText: "Update Admin",
+      submitButtonText: "Update Admin",
     },
   };
 
@@ -326,36 +345,34 @@ const AdminsPage = () => {
     ],
   };
 
-  const adminConfig = {
+  const config = {
     title: "Admin Management",
     description: "Manage system administrators and their permissions",
-    table: adminTableConfig,
-    form: adminFormConfig,
+    tableConfig,
+    formConfig,
     data: filteredData,
     loading,
     modals: {
-      showAddModal,
-      showEditModal,
-      showDeleteModal,
+      showAdd,
+      showEdit,
+      showDelete,
       selectedItem,
       formLoading
     },
     handlers: {
       onAdd: handleAdd,
       onSubmit: handleFormSubmit,
-      onDeleteConfirm: handleDeleteConfirm,
-      onAddModalClose: () => setShowAddModal(false),
-      onEditModalClose: () => setShowEditModal(false),
-      onDeleteModalClose: () => setShowDeleteModal(false),
-      onFilterOpen: () => setShowFilterSidebar(true),
-      onFilterClose: () => setShowFilterSidebar(false),
+      onDelete: handleDeleteConfirm,
+      onModalClose: handleModalClose,
+      onFilterToggle: handleFilterToggle,
       onFilterApply: handleFilterApply,
     },
+    FilterComponent: AdminFilters,
     filterConfig,
     showFilterSidebar
   };
 
-  return <CrudPage config={adminConfig} />;
+  return <CrudPage config={config} />;
 };
 
 export default AdminsPage;

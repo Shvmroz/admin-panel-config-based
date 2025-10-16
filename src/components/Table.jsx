@@ -6,8 +6,10 @@ import Button from "./Button";
 const Table = ({ config }) => {
   const {
     data = [],
-    columns = [],
-    actions = [],
+    table_head = [],
+    columns = table_head,
+    menu_actions = [],
+    actions = menu_actions,
     loading = false,
     search = { enabled: false },
     pagination = { enabled: false, pageSize: 10 },
