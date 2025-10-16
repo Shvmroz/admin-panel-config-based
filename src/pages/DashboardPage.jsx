@@ -8,7 +8,7 @@ import {
   UserCog,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/ui/Button";
+import Button from "../components/Button";
 
 const dashboardData = {
   data: {
@@ -18,26 +18,7 @@ const dashboardData = {
     monthly_revenue: 45000,
     total_users: 300,
     active_subscriptions: 145,
-    top_organizations: [
-      {
-        _id: "org_456",
-        name: "TechCorp Events",
-        total_events: 25,
-        total_revenue: 50000,
-      },
-      {
-        _id: "org_789",
-        name: "Innovation Labs",
-        total_events: 18,
-        total_revenue: 35000,
-      },
-      {
-        _id: "org_123",
-        name: "StartupHub",
-        total_events: 15,
-        total_revenue: 28000,
-      },
-    ],
+
   },
 };
 
@@ -128,15 +109,7 @@ const DashboardPage = () => {
             Monitor your platform performance and key metrics
           </p>
         </div>
-        <Button
-          className="hidden sm:flex space-x-2 items-center"
-          variant="contained"
-          color="primary"
-          onClick={() => navigate("/dashboard")}
-        >
-          <TrendingUp className="w-4 h-4" />
-          <span>Refresh Dashboard</span>
-        </Button>
+       
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -149,44 +122,7 @@ const DashboardPage = () => {
         ))}
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100 dark:border-gray-700">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-            Top Organizations
-          </h2>
-          <span
-            onClick={() => navigate("/users")}
-            className="flex items-center space-x-1 text-blue-500 hover:text-blue-600 text-sm font-medium cursor-pointer"
-          >
-            <span>View All</span>
-            <ChevronRight className="w-4 h-4" />
-          </span>
-        </div>
-        <div className="p-6">
-          <div className="space-y-4">
-            {data.top_organizations.map((org, i) => (
-              <div key={org._id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
-                    #{i + 1}
-                  </span>
-                  <div>
-                    <h3 className="font-medium text-gray-900 dark:text-white">
-                      {org.name}
-                    </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      {org.total_events} events
-                    </p>
-                  </div>
-                </div>
-                <div className="text-green-600 dark:text-green-400 font-semibold">
-                  ${org.total_revenue.toLocaleString()}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+ 
     </div>
   );
 };

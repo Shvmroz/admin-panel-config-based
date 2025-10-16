@@ -20,13 +20,6 @@ const menuItems = [
     color: "text-purple-500",
     bgColor: "bg-purple-50",
   },
-  {
-    text: "Users",
-    icon: Users,
-    path: "/users",
-    color: "text-green-500",
-    bgColor: "bg-green-50",
-  },
 ];
 
 const Sidebar = ({ open, onClose, variant = "temporary" }) => {
@@ -38,12 +31,12 @@ const Sidebar = ({ open, onClose, variant = "temporary" }) => {
       <Link to="/dashboard">
         <div className="cursor-pointer h-16 pl-8 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-3">
           <img 
-            src="/assets/exiby_logo.png" 
-            alt="ExiBy Logo" 
+            src="/assets/logo.png" 
+            alt="Logo" 
             className="w-8 h-8 object-contain"
           />
-          <h1 className="text-gray-900 dark:text-white text-2xl font-extrabold leading-tight mt-1">
-            EXIBY
+          <h1 className="text-gray-900 dark:text-white text-3xl font-bold leading-tight mt-1">
+            Admin Portal
           </h1>
         </div>
       </Link>

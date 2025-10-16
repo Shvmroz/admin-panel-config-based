@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSnackbar } from 'notistack';
 import { Plus, Filter } from 'lucide-react';
-import Table from '../ui/Table';
-import Modal from '../ui/Modal';
-import Form from '../ui/Form';
-import Button from '../ui/Button';
+import Table from '../../components/Table';
+import Modal from '../../components/Modal';
+import Form from '../../components/Form';
+import Button from '../../components/Button';
 
 const CrudPage = ({ config }) => {
   const { enqueueSnackbar } = useSnackbar();

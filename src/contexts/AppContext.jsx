@@ -17,19 +17,12 @@ const STATIC_USERS = [
   {
     id: 1,
     email: "admin@example.com",
-    password: "admin123",
-    first_name: "Admin",
-    last_name: "User",
+    password: "admin@example.com",
+    first_name: "Main",
+    last_name: "Admin",
     role: "admin"
   },
-  {
-    id: 2,
-    email: "user@example.com", 
-    password: "user123",
-    first_name: "Regular",
-    last_name: "User",
-    role: "user"
-  }
+
 ];
 
 export const AppProvider = ({ children }) => {

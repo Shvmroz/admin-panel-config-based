@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 const Button = React.forwardRef(({
   className,
   variant = "contained",
-  color = "primary",
+  color = "default",
   size = "default",
   fullWidth = false,
   children,
