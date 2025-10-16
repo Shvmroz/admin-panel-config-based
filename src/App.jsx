@@ -3,7 +3,7 @@ import { AppProvider, useAppContext } from "./contexts/AppContext";
 import AppRoutes from "./routes/Routes";
 import MainLayout from "./layout/MainLayout";
 import { Navigate, useLocation } from "react-router-dom";
-import Spinner from "./components/ui/Spinner";
+import Spinner from "./components/Spinner";
 
 const AppInner = () => {
   const { isAuthenticated, loading } = useAppContext();
