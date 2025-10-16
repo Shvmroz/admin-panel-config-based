@@ -24,7 +24,23 @@ const CrudPage = ({ config }) => {
 
   const handleFilterToggle = () => {
     setShowFilterSidebar(prev => !prev);
-    handlers.onFilterToggle?.();
+  };
+
+  const handleMenuAction = (type, item) => {
+    const actionHandlers = tableConfig.handlers || {};
+    switch (type) {
+      case 'edit':
+        actionHandlers.onEdit?.(item);
+        break;
+      case 'view':
+        actionHandlers.onView?.(item);
+        break;
+      case 'delete':
+        actionHandlers.onDelete?.(item);
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -55,7 +71,15 @@ const CrudPage = ({ config }) => {
         </div>
       </div>
 
-      <Table config={{ ...tableConfig, data, loading }} />
+      <Table config={{
+        ...tableConfig,
+        data,
+        loading,
+        menu_actions: tableConfig.menu_actions?.map(action => ({
+          ...action,
+          onClick: (item) => handleMenuAction(action.type, item)
+        }))
+      }} />
 
       {filterConfig && FilterComponent && (
         <FilterSidebar
@@ -64,33 +88,33 @@ const CrudPage = ({ config }) => {
         >
           <FilterComponent
             config={filterConfig}
-            onApply={handlers.onFilterApply}
+            onApply={filterConfig.handlers?.onApply}
           />
         </FilterSidebar>
       )}
 
       <Modal
         isOpen={modals.showAdd}
-        onClose={() => handlers.onModalClose?.('add')}
+        onClose={() => formConfig.handlers?.onModalClose?.('add')}
         title={`Add New ${title.replace(' Management', '')}`}
         size="lg"
       >
         <Form
           config={formConfig.add}
-          onSubmit={handlers.onSubmit}
+          onSubmit={formConfig.handlers?.onSubmit}
           loading={modals.formLoading}
         />
       </Modal>
 
       <Modal
         isOpen={modals.showEdit}
-        onClose={() => handlers.onModalClose?.('edit')}
+        onClose={() => formConfig.handlers?.onModalClose?.('edit')}
         title={`Edit ${title.replace(' Management', '')}`}
         size="lg"
       >
         <Form
           config={formConfig.edit}
-          onSubmit={handlers.onSubmit}
+          onSubmit={formConfig.handlers?.onSubmit}
           initialData={modals.selectedItem}
           loading={modals.formLoading}
         />

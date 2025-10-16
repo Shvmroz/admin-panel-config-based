@@ -141,6 +141,11 @@ const AdminsPage = () => {
   const tableConfig = {
     search: { enabled: true, placeholder: "Search admins..." },
     pagination: { enabled: true, pageSize: 10 },
+    handlers: {
+      onEdit: handleEdit,
+      onView: handleView,
+      onDelete: handleDelete
+    },
     table_head: [
       { key: "id", title: "ID" },
       {
@@ -215,26 +220,27 @@ const AdminsPage = () => {
       {
         title: "Edit Admin",
         type: "edit",
-        icon: <Pencil className="w-4 h-4" />,
-        onClick: handleEdit
+        icon: <Pencil className="w-4 h-4" />
       },
       {
         title: "View Details",
         type: "view",
-        icon: <Eye className="w-4 h-4" />,
-        onClick: handleView
+        icon: <Eye className="w-4 h-4" />
       },
       {
         title: "Delete Admin",
         type: "delete",
         variant: "danger",
-        icon: <Trash2 className="w-4 h-4" />,
-        onClick: handleDelete
+        icon: <Trash2 className="w-4 h-4" />
       },
     ],
   };
 
   const formConfig = {
+    handlers: {
+      onSubmit: handleFormSubmit,
+      onModalClose: handleModalClose
+    },
     add: {
       input_fields: [
         { key: "name", label: "Full Name", type: "text", required: true },
@@ -316,6 +322,9 @@ const AdminsPage = () => {
 
   const filterConfig = {
     FilterComponent: AdminFilters,
+    handlers: {
+      onApply: handleFilterApply
+    },
     input_fields: [
       {
         key: "status",
@@ -362,11 +371,7 @@ const AdminsPage = () => {
     },
     handlers: {
       onAdd: handleAdd,
-      onSubmit: handleFormSubmit,
-      onDelete: handleDeleteConfirm,
-      onModalClose: handleModalClose,
-      onFilterToggle: handleFilterToggle,
-      onFilterApply: handleFilterApply,
+      onDelete: handleDeleteConfirm
     },
     filterConfig
   };
