@@ -16,10 +16,16 @@ const CrudPage = ({ config }) => {
     loading = false,
     modals = {},
     handlers = {},
-    FilterComponent = null,
-    filterConfig = null,
-    showFilterSidebar = false
+    filterConfig = null
   } = config;
+
+  const FilterComponent = filterConfig?.FilterComponent;
+  const [showFilterSidebar, setShowFilterSidebar] = React.useState(false);
+
+  const handleFilterToggle = () => {
+    setShowFilterSidebar(prev => !prev);
+    handlers.onFilterToggle?.();
+  };
 
   return (
     <div className="space-y-6">
@@ -29,9 +35,9 @@ const CrudPage = ({ config }) => {
           <p className="text-gray-600 dark:text-gray-400 mt-1">{description}</p>
         </div>
         <div className="flex items-center space-x-3">
-          {FilterComponent && (
+          {filterConfig && (
             <Button
-              onClick={() => handlers.onFilterToggle?.()}
+              onClick={handleFilterToggle}
               variant="outlined"
             >
               <Filter className="w-4 h-4 mr-2" />
@@ -51,10 +57,10 @@ const CrudPage = ({ config }) => {
 
       <Table config={{ ...tableConfig, data, loading }} />
 
-      {FilterComponent && (
+      {filterConfig && FilterComponent && (
         <FilterSidebar
           isOpen={showFilterSidebar}
-          onClose={() => handlers.onFilterToggle?.()}
+          onClose={handleFilterToggle}
         >
           <FilterComponent
             config={filterConfig}

@@ -315,7 +315,8 @@ const AdminsPage = () => {
   };
 
   const filterConfig = {
-    fields: [
+    FilterComponent: AdminFilters,
+    input_fields: [
       {
         key: "status",
         label: "Status",
@@ -367,9 +368,7 @@ const AdminsPage = () => {
       onFilterToggle: handleFilterToggle,
       onFilterApply: handleFilterApply,
     },
-    FilterComponent: AdminFilters,
-    filterConfig,
-    showFilterSidebar
+    filterConfig
   };
 
   return <CrudPage config={config} />;

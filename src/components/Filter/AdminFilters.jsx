@@ -23,7 +23,7 @@ const AdminFilters = ({ config, onApply, onClose }) => {
 
   return (
     <div className="space-y-4">
-      {config.fields?.map((field) => (
+      {config.input_fields?.map((field) => (
         <div key={field.key}>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             {field.label}
