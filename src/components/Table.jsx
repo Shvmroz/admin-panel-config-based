@@ -6,13 +6,13 @@ import Button from "./Button";
 const Table = ({ config }) => {
   const {
     data = [],
-    table_head = [],
-    menu_actions = [],
-    actions = menu_actions,
+    columns = [],
+    actions = [],
     loading = false,
     search = { enabled: false },
     pagination = { enabled: false, pageSize: 10 },
     emptyMessage = "No data available",
+    onMenuAction
   } = config;
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,7 +26,7 @@ const Table = ({ config }) => {
   const filteredData = useMemo(() => {
     if (!search.enabled || !searchTerm.trim()) return data;
     return data.filter((item) =>
-      table_head.some((col) => {
+      columns.some((col) => {
         const value = item[col.key];
         return (
           value &&
@@ -34,7 +34,7 @@ const Table = ({ config }) => {
         );
       })
     );
-  }, [data, searchTerm, table_head, search.enabled]);
+  }, [data, searchTerm, columns, search.enabled]);
 
   // ✅ Pagination
   const paginatedData = useMemo(() => {
@@ -49,7 +49,7 @@ const Table = ({ config }) => {
   const handleActionClick = (action, item, e) => {
     e.stopPropagation();
     setActiveMenu(null);
-    action.onClick(item);
+    onMenuAction?.(action.type, item);
   };
 
   const handleMenuToggle = (itemId, e) => {
@@ -177,16 +177,21 @@ const Table = ({ config }) => {
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-700/60">
             <tr>
-              {table_head.map((col) => (
+              {columns.map((col) => (
                 <th
                   key={col.key}
                   className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider min-w-max max-w-[180px] truncate"
                 >
                   {col.title}
+                  {col.description && (
+                    <div className="text-xs text-gray-500 dark:text-gray-400 font-normal normal-case mt-1">
+                      {col.description}
+                    </div>
+                  )}
                 </th>
               ))}
               {actions.length > 0 && (
-                <th className="px-6 py-4 text-right text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider min-w-max max-w-[180px]">
+                <th className="px-6 py-4 text-right text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                   Actions
                 </th>
               )}
@@ -197,7 +202,7 @@ const Table = ({ config }) => {
             {paginatedData.length === 0 ? (
               <tr>
                 <td
-                  colSpan={table_head.length + (actions.length > 0 ? 1 : 0)}
+                  colSpan={columns.length + (actions.length > 0 ? 1 : 0)}
                   className="text-center py-10 text-gray-500 dark:text-gray-400"
                 >
                   {emptyMessage}
@@ -209,7 +214,7 @@ const Table = ({ config }) => {
                   key={item.id || index}
                   className="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                 >
-                  {table_head.map((col) => (
+                  {columns.map((col) => (
                     <td
                       key={col.key}
                       className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 min-w-max max-w-[300px] truncate"
@@ -226,9 +231,9 @@ const Table = ({ config }) => {
                       <button
                         ref={(el) => (buttonRefs.current[item.id] = el)}
                         onClick={(e) => handleMenuToggle(item.id, e)}
-                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md transition"
+                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md transition primary-text"
                       >
-                        <MoreVertical className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                        <MoreVertical className="h-5 w-5" />
                       </button>
                     </td>
                   )}
@@ -253,6 +258,7 @@ const Table = ({ config }) => {
               size="sm"
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
+              className="primary-border primary-text"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -264,6 +270,7 @@ const Table = ({ config }) => {
               size="sm"
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
+              className="primary-border primary-text"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>

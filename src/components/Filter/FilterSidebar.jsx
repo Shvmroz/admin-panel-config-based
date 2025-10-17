@@ -1,7 +1,26 @@
 import React from 'react';
 import { X } from 'lucide-react';
 
-const FilterSidebar = ({ isOpen, onClose, children }) => {
+const FilterSidebar = ({ isOpen, onClose, config, onApply }) => {
+  const [filters, setFilters] = React.useState({});
+
+  const handleChange = (key, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  const handleApply = () => {
+    onApply?.(filters);
+    onClose();
+  };
+
+  const handleReset = () => {
+    setFilters({});
+    onApply?.({});
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -25,7 +44,52 @@ const FilterSidebar = ({ isOpen, onClose, children }) => {
           </div>
 
           <div className="flex-1 overflow-y-auto p-4">
-            {children}
+            <div className="space-y-4">
+              {config?.fields?.map((field) => (
+                <div key={field.key}>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {field.label}
+                  </label>
+                  {field.type === 'select' ? (
+                    <select
+                      value={filters[field.key] || ''}
+                      onChange={(e) => handleChange(field.key, e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">All</option>
+                      {field.options?.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type={field.type}
+                      value={filters[field.key] || ''}
+                      onChange={(e) => handleChange(field.key, e.target.value)}
+                      placeholder={field.placeholder}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  )}
+                </div>
+              ))}
+
+              <div className="flex gap-2 pt-4">
+                <button
+                  onClick={handleApply}
+                  className="flex-1 primary-bg primary-hover text-white px-4 py-2 rounded-md font-medium"
+                >
+                  Apply Filters
+                </button>
+                <button
+                  onClick={handleReset}
+                  className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-md font-medium hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

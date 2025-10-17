@@ -1,196 +1,164 @@
-# Configuration Guide
+# Simplified Config-Based Admin Panel Guide
 
-This guide explains the standardized configuration structure used across the application.
+This guide explains the streamlined configuration structure for the admin panel.
 
-## Configuration Structure
+## Overview
 
-All CRUD pages use a unified configuration object with the following structure:
+The admin panel uses a single configuration object that handles all CRUD operations. Everything is managed from the parent page component, making it easy to create new admin pages.
 
-```javascript
-const config = {
-  // Page metadata
-  title: "Page Title",
-  description: "Page description",
+## Primary Color System
 
-  // Table configuration
-  tableConfig: {
-    search: { enabled: true, placeholder: "Search..." },
-    pagination: { enabled: true, pageSize: 10 },
-    handlers: {
-      onEdit: handleEdit,    // Handler for edit action
-      onView: handleView,    // Handler for view action
-      onDelete: handleDelete // Handler for delete action
-    },
-    table_head: [...],
-    menu_actions: [...]      // Actions now use types instead of inline handlers
-  },
+The app uses CSS custom properties for consistent theming:
 
-  // Form configuration (for add/edit modals)
-  formConfig: {
-    handlers: {
-      onSubmit: handleFormSubmit,        // Handler for form submission
-      onModalClose: handleModalClose     // Handler for modal close
-    },
-    add: {
-      input_fields: [...],
-      submitButtonText: "Create"
-    },
-    edit: {
-      input_fields: [...],
-      submitButtonText: "Update"
-    }
-  },
-
-  // Filter configuration (optional)
-  filterConfig: {
-    FilterComponent: YourFilterComponent,
-    handlers: {
-      onApply: handleFilterApply        // Handler for applying filters
-    },
-    input_fields: [...]
-  },
-
-  // Data and loading state
-  data: [],
-  loading: false,
-
-  // Modal states
-  modals: {
-    showAdd,
-    showEdit,
-    showDelete,
-    selectedItem,
-    formLoading
-  },
-
-  // Global handlers (only for actions not tied to specific configs)
-  handlers: {
-    onAdd: handleAdd,           // Handler for add button
-    onDelete: handleDeleteConfirm // Handler for delete confirmation
-  }
-};
+```css
+/* Available classes */
+.primary-bg          /* Primary background color */
+.primary-bg-light    /* Light primary background */
+.primary-bg-dark     /* Dark primary background */
+.primary-text        /* Primary text color */
+.primary-border      /* Primary border color */
+.primary-hover:hover /* Primary hover state */
 ```
 
-## Key Naming Conventions
+To change the app's primary color, update the CSS variables in `src/index.css`:
 
-### input_fields
-All field definitions use `input_fields` consistently:
-- `formConfig.add.input_fields`
-- `formConfig.edit.input_fields`
-- `filterConfig.input_fields`
-
-### Field Structure
-Each field in `input_fields` follows this structure:
-
-```javascript
-{
-  key: "fieldName",           // Database/state key
-  label: "Field Label",       // Display label
-  type: "text",              // Input type: text, email, password, select, textarea, etc.
-  required: true,            // Optional: validation
-  placeholder: "...",        // Optional: input placeholder
-  options: [                 // For select fields
-    { value: "val1", label: "Label 1" },
-    { value: "val2", label: "Label 2" }
-  ]
+```css
+:root {
+  --primary-500: #3b82f6; /* Change this to your desired color */
+  --primary-600: #2563eb; /* Darker shade */
+  --primary-700: #1d4ed8; /* Even darker shade */
+  /* etc... */
 }
 ```
 
-## Handler Organization
-
-Each configuration now contains its own handlers for better clarity and maintainability:
-
-### Table Handlers
-Located in `tableConfig.handlers`:
-- `onEdit`: Called when edit action is clicked
-- `onView`: Called when view action is clicked
-- `onDelete`: Called when delete action is clicked
-
-### Form Handlers
-Located in `formConfig.handlers`:
-- `onSubmit`: Called when form is submitted (used for both add and edit)
-- `onModalClose`: Called when modal is closed
-
-### Filter Handlers
-Located in `filterConfig.handlers`:
-- `onApply`: Called when filters are applied
-
-### Global Handlers
-Located in `config.handlers` (for cross-config actions):
-- `onAdd`: Called when add button is clicked
-- `onDelete`: Called for delete confirmation
-
-## Filter Configuration
-
-Filters are now simplified into a single object with their own handlers:
+## Configuration Structure
 
 ```javascript
-const filterConfig = {
-  FilterComponent: YourFilterComponent,
-  handlers: {
-    onApply: handleFilterApply  // Handler specific to filters
+const config = {
+  // Page info
+  title: "Admin Management",
+  description: "Manage system administrators",
+  
+  // Data and state
+  data: filteredData,
+  loading: false,
+  
+  // Event handlers
+  onView: handleView,
+  onSubmit: handleSubmit,
+  onDelete: handleDelete,
+  onFilterApply: setFilters,
+  
+  // Table configuration
+  tableConfig: {
+    columns: [...],
+    actions: [...],
+    search: { enabled: true, placeholder: "Search..." },
+    pagination: { enabled: true, pageSize: 10 }
   },
-  input_fields: [
-    {
-      key: "status",
-      label: "Status",
-      type: "select",
-      options: [...]
-    }
-  ]
+  
+  // Form configuration
+  formConfig: {
+    add: { fields: [...], submitText: "Create" },
+    edit: { fields: [...], submitText: "Update" }
+  },
+  
+  // Filter configuration (optional)
+  filterConfig: {
+    fields: [...]
+  }
 };
 ```
 
-**Benefits:**
-- If `filterConfig` is present, filters are automatically enabled
-- No need to pass separate `showFilterSidebar` prop
-- Filter sidebar state is managed internally by CrudPage
-- Consistent naming with form configurations
-- Handlers are grouped with their related config
+## Table Configuration
 
-## Complete Example Usage
+### Columns
+Each column supports:
+- `key`: Data property key
+- `title`: Column header
+- `description`: Optional subtitle under header
+- `render`: Optional custom render function
 
 ```javascript
-// In your page component (e.g., AdminsPage.jsx)
-
-// Table configuration with handlers
-const tableConfig = {
-  search: { enabled: true, placeholder: "Search admins..." },
-  pagination: { enabled: true, pageSize: 10 },
-  handlers: {
-    onEdit: handleEdit,
-    onView: handleView,
-    onDelete: handleDelete
+columns: [
+  {
+    key: "name",
+    title: "Full Name",
+    description: "User's display name"
   },
-  table_head: [...],
-  menu_actions: [
-    { title: "Edit", type: "edit", icon: <EditIcon /> },
-    { title: "View", type: "view", icon: <ViewIcon /> },
-    { title: "Delete", type: "delete", icon: <DeleteIcon /> }
-  ]
-};
+  {
+    key: "status",
+    title: "Status",
+    description: "Account status",
+    render: (value) => <StatusBadge status={value} />
+  }
+]
+```
 
-// Form configuration with handlers
-const formConfig = {
-  handlers: {
-    onSubmit: handleFormSubmit,
-    onModalClose: handleModalClose
+### Actions
+Menu actions for each row:
+
+```javascript
+actions: [
+  {
+    title: "Edit",
+    type: "edit",
+    icon: <EditIcon />
   },
+  {
+    title: "Delete",
+    type: "delete",
+    variant: "danger",
+    icon: <DeleteIcon />
+  }
+]
+```
+
+## Form Configuration
+
+Forms are configured separately for add and edit operations:
+
+```javascript
+formConfig: {
   add: {
-    input_fields: [...]
+    fields: [
+      {
+        key: "name",
+        label: "Full Name",
+        type: "text",
+        required: true
+      },
+      {
+        key: "role",
+        label: "Role",
+        type: "select",
+        options: [
+          { value: "admin", label: "Administrator" },
+          { value: "user", label: "User" }
+        ]
+      }
+    ],
+    submitText: "Create User"
   },
   edit: {
-    input_fields: [...]
+    fields: [...], // Same structure
+    submitText: "Update User"
   }
-};
+}
+```
 
-// Filter configuration with handlers
-const filterConfig = {
-  FilterComponent: AdminFilters,
-  handlers: {
-    onApply: handleFilterApply
-  },
-  input_fields: [
+### Field Types
+- `text`, `email`, `password`, `tel`, `number`
+- `select` (requires `options` array)
+- `textarea` (supports `rows` property)
+
+## Filter Configuration
+
+Optional filtering sidebar:
+
+```javascript
+filterConfig: {
+  fields: [
     {
       key: "status",
       label: "Status",
@@ -199,116 +167,147 @@ const filterConfig = {
         { value: "active", label: "Active" },
         { value: "inactive", label: "Inactive" }
       ]
+    },
+    {
+      key: "department",
+      label: "Department",
+      type: "text",
+      placeholder: "Search departments..."
     }
   ]
-};
-
-// Main config
-const config = {
-  title: "Admin Management",
-  tableConfig,
-  formConfig,
-  filterConfig,
-  data: filteredData,
-  loading,
-  modals: { showAdd, showEdit, showDelete, selectedItem, formLoading },
-  handlers: {
-    onAdd: handleAdd,
-    onDelete: handleDeleteConfirm
-  }
-};
-
-return <CrudPage config={config} />;
+}
 ```
 
-## Developer Notes
+## Event Handlers
 
-1. **Consistency**: All configurations use `input_fields` for field definitions
-2. **Simplicity**: Filter integration is automatic when `filterConfig` is provided
-3. **Separation of Concerns**: Each config has its own handlers - easy to find and maintain
-4. **Reusability**: Configs are self-contained and can be easily reused
-5. **Type Safety**: Use the same field types across forms and filters
-6. **Extensibility**: Easy to add new field types or configurations
-7. **Developer-Friendly**: Clear structure makes it easy for new developers to understand
+All handlers are defined in the parent component:
 
-## Migration from Old Structure
-
-If you have existing code using the old structure:
-
-**Before:**
 ```javascript
-// Handlers spread across config and inline in menu_actions
-const tableConfig = {
-  menu_actions: [
-    { title: "Edit", onClick: handleEdit },  // Inline handler
-    { title: "Delete", onClick: handleDelete }
-  ]
+// View handler (optional)
+const handleView = (item) => {
+  console.log('Viewing:', item);
 };
 
-const filterConfig = {
-  fields: [...]  // Old naming
-};
-
-const config = {
-  FilterComponent: AdminFilters,
-  filterConfig,
-  showFilterSidebar,  // Manual state management
-  handlers: {
-    onEdit: handleEdit,
-    onSubmit: handleFormSubmit,
-    onDelete: handleDeleteConfirm,
-    onModalClose: handleModalClose,
-    onFilterApply: handleFilterApply
+// Form submission (handles both add and edit)
+const handleSubmit = async (formData, selectedItem) => {
+  if (selectedItem) {
+    // Update existing item
+    updateItem(selectedItem.id, formData);
+  } else {
+    // Create new item
+    createItem(formData);
   }
+};
+
+// Delete handler
+const handleDelete = async (selectedItem) => {
+  await deleteItem(selectedItem.id);
+};
+
+// Filter handler
+const handleFilterApply = (filters) => {
+  setFilters(filters);
 };
 ```
 
-**After:**
+## Complete Example
+
 ```javascript
-// Handlers organized within their respective configs
-const tableConfig = {
-  handlers: {
-    onEdit: handleEdit,
-    onView: handleView,
-    onDelete: handleDelete
-  },
-  menu_actions: [
-    { title: "Edit", type: "edit" },  // Just type, no inline handler
-    { title: "Delete", type: "delete" }
-  ]
-};
+// AdminsPage.jsx
+import React, { useState, useEffect } from 'react';
+import CrudPage from '../components/CrudPage';
 
-const formConfig = {
-  handlers: {
-    onSubmit: handleFormSubmit,
-    onModalClose: handleModalClose
-  },
-  add: { input_fields: [...] },
-  edit: { input_fields: [...] }
-};
+const AdminsPage = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filters, setFilters] = useState({});
 
-const filterConfig = {
-  FilterComponent: AdminFilters,
-  handlers: {
-    onApply: handleFilterApply
-  },
-  input_fields: [...]  // Renamed from "fields"
-};
+  const handleSubmit = async (formData, selectedItem) => {
+    if (selectedItem) {
+      // Update logic
+    } else {
+      // Create logic
+    }
+  };
 
-const config = {
-  tableConfig,
-  formConfig,
-  filterConfig,  // Automatic filter handling, no showFilterSidebar needed
-  handlers: {
-    onAdd: handleAdd,
-    onDelete: handleDeleteConfirm
-  }
+  const handleDelete = async (selectedItem) => {
+    // Delete logic
+  };
+
+  const config = {
+    title: "Admin Management",
+    description: "Manage administrators",
+    data: filteredData,
+    loading,
+    onSubmit: handleSubmit,
+    onDelete: handleDelete,
+    onFilterApply: setFilters,
+    
+    tableConfig: {
+      columns: [
+        { key: "name", title: "Name", description: "Full name" },
+        { key: "email", title: "Email", description: "Contact email" }
+      ],
+      actions: [
+        { title: "Edit", type: "edit", icon: <EditIcon /> },
+        { title: "Delete", type: "delete", icon: <DeleteIcon /> }
+      ],
+      search: { enabled: true },
+      pagination: { enabled: true, pageSize: 10 }
+    },
+    
+    formConfig: {
+      add: {
+        fields: [
+          { key: "name", label: "Name", type: "text", required: true },
+          { key: "email", label: "Email", type: "email", required: true }
+        ],
+        submitText: "Create Admin"
+      },
+      edit: {
+        fields: [
+          { key: "name", label: "Name", type: "text", required: true },
+          { key: "email", label: "Email", type: "email", required: true }
+        ],
+        submitText: "Update Admin"
+      }
+    },
+    
+    filterConfig: {
+      fields: [
+        {
+          key: "status",
+          label: "Status",
+          type: "select",
+          options: [
+            { value: "active", label: "Active" },
+            { value: "inactive", label: "Inactive" }
+          ]
+        }
+      ]
+    }
+  };
+
+  return <CrudPage config={config} />;
 };
 ```
 
-**Key Improvements:**
-1. Handlers are now co-located with their related config
-2. Menu actions use `type` instead of inline `onClick`
-3. Consistent `input_fields` naming across all configs
-4. Automatic filter sidebar management
-5. Clearer separation of concerns
+## Benefits
+
+1. **Simple**: One config object handles everything
+2. **Consistent**: Same structure for all admin pages
+3. **Maintainable**: All logic in parent component
+4. **Flexible**: Easy to customize colors and behavior
+5. **Reusable**: Create new pages by just configuring the object
+6. **Clear**: Column descriptions help users understand data
+
+## Creating New Pages
+
+To create a new admin page:
+
+1. Copy the AdminsPage structure
+2. Update the config object with your data structure
+3. Implement the handler functions
+4. Add the route to your router
+
+That's it! The CrudPage component handles all the UI and interactions automatically.
