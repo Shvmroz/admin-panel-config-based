@@ -319,7 +319,7 @@ const AdminsPage = () => {
 };
 
 export default AdminsPage;
-    search: { enabled: true, placeholder: "Search admins..." },
+    search: { enabled: true, placeholder: "Search admins...", },
     pagination: { enabled: true, pageSize: 10 },
     handlers: {
       onEdit: handleEdit,
