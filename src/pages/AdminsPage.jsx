@@ -17,64 +17,70 @@ const AdminsPage = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 500));
       setData(adminMockData);
     } catch (error) {
-      enqueueSnackbar("Failed to load data", { variant: "error" });
+      enqueueSnackbar('Failed to load data', { variant: 'error' });
     } finally {
       setLoading(false);
     }
   };
 
   const handleView = (item) => {
-    enqueueSnackbar(`Viewing details for ${item.name}`, { variant: "info" });
+    enqueueSnackbar(`Viewing details for ${item.name}`, { variant: 'info' });
   };
 
   const handleSubmit = async (formData, selectedItem) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       if (selectedItem) {
-        setData((prev) =>
-          prev.map((item) =>
-            item.id === selectedItem.id ? { ...item, ...formData } : item
-          )
-        );
-        enqueueSnackbar("Admin updated successfully", { variant: "success" });
+        setData(prev => prev.map(item =>
+          item.id === selectedItem.id ? { ...item, ...formData } : item
+        ));
+        enqueueSnackbar('Admin updated successfully', { variant: 'success' });
       } else {
         const newItem = {
           ...formData,
-          id: Math.max(...data.map((d) => d.id), 0) + 1,
-          createdAt: new Date().toISOString().split("T")[0],
-          lastLogin: "Never",
+          id: Math.max(...data.map(d => d.id), 0) + 1,
+          createdAt: new Date().toISOString().split('T')[0],
+          lastLogin: 'Never'
         };
-        setData((prev) => [newItem, ...prev]);
-        enqueueSnackbar("Admin added successfully", { variant: "success" });
+        setData(prev => [newItem, ...prev]);
+        enqueueSnackbar('Admin added successfully', { variant: 'success' });
       }
     } catch (error) {
-      enqueueSnackbar("Operation failed", { variant: "error" });
+      enqueueSnackbar('Operation failed', { variant: 'error' });
     }
   };
 
   const handleDelete = async (selectedItem) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      setData((prev) => prev.filter((item) => item.id !== selectedItem.id));
-      enqueueSnackbar("Admin deleted successfully", { variant: "success" });
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      setData(prev => prev.filter(item => item.id !== selectedItem.id));
+      enqueueSnackbar('Admin deleted successfully', { variant: 'success' });
     } catch (error) {
-      enqueueSnackbar("Delete failed", { variant: "error" });
+      enqueueSnackbar('Delete failed', { variant: 'error' });
     }
   };
 
   const filteredData = React.useMemo(() => {
     let result = [...data];
 
-    if (filters.status) result = result.filter((i) => i.status === filters.status);
-    if (filters.role) result = result.filter((i) => i.role === filters.role);
-    if (filters.department)
-      result = result.filter((i) =>
-        i.department?.toLowerCase().includes(filters.department.toLowerCase())
+    if (filters.status) {
+      result = result.filter(item => item.status === filters.status);
+    }
+
+    if (filters.role) {
+      result = result.filter(item => item.role === filters.role);
+    }
+
+    if (filters.department) {
+      result = result.filter(item =>
+        item.department?.toLowerCase().includes(filters.department.toLowerCase())
       );
+    }
 
     return result;
   }, [data, filters]);
@@ -88,13 +94,18 @@ const AdminsPage = () => {
     onSubmit: handleSubmit,
     onDelete: handleDelete,
     onFilterApply: setFilters,
-
+    
     tableConfig: {
       columns: [
-        { key: "id", title: "#", description: "Unique identifier" },
+        { 
+          key: "id", 
+          title: "#",
+          description: "Unique identifier"
+        },
         {
           key: "user",
           title: "User Info",
+          description: "Name and email details",
           render: (value, row) => (
             <div className="flex items-center space-x-4">
               {row?.image ? (
@@ -122,14 +133,15 @@ const AdminsPage = () => {
         {
           key: "status",
           title: "Status",
+          description: "Account status",
           render: (value) => (
             <span
               className={`inline-flex items-center justify-center px-3 py-1 rounded-sm text-xs font-semibold border uppercase max-h-[24px] min-w-[78px] ${
                 value === "active"
-                  ? "border-green-400 text-green-500"
+                  ? "border-green-400 text-green-500 dark:border-green-600 dark:text-green-500"
                   : value === "inactive"
-                  ? "border-red-400 text-red-500"
-                  : "border-yellow-400 text-yellow-500"
+                  ? "border-red-400 text-red-500 dark:border-red-600 dark:text-red-500"
+                  : "border-yellow-400 text-yellow-500 dark:border-yellow-600 dark:text-yellow-500"
               }`}
             >
               {value}
@@ -139,14 +151,15 @@ const AdminsPage = () => {
         {
           key: "role",
           title: "Admin Level",
+          description: "Permission level",
           render: (value) => (
             <span
               className={`inline-flex items-center px-3 py-1 rounded-sm text-xs font-medium ${
                 value === "admin"
-                  ? "bg-blue-100 text-blue-800"
+                  ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
                   : value === "moderator"
-                  ? "bg-teal-100 text-teal-800"
-                  : "bg-gray-100 text-gray-800"
+                  ? "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300"
+                  : "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300"
               }`}
             >
               {value === "admin"
@@ -157,16 +170,37 @@ const AdminsPage = () => {
             </span>
           ),
         },
-        { key: "lastLogin", title: "Last Login" },
-        { key: "createdAt", title: "Created Date" },
+        { 
+          key: "lastLogin", 
+          title: "Last Login",
+          description: "Last access time"
+        },
+        { 
+          key: "createdAt", 
+          title: "Created Date",
+          description: "Account creation date"
+        },
       ],
       actions: [
-        { title: "Edit Admin", type: "edit", icon: <Pencil className="w-4 h-4" /> },
-        { title: "View Details", type: "view", icon: <Eye className="w-4 h-4" /> },
-        { title: "Delete Admin", type: "delete", icon: <Trash2 className="w-4 h-4" /> },
+        {
+          title: "Edit Admin",
+          type: "edit",
+          icon: <Pencil className="w-4 h-4" />
+        },
+        {
+          title: "View Details",
+          type: "view",
+          icon: <Eye className="w-4 h-4" />
+        },
+        {
+          title: "Delete Admin",
+          type: "delete",
+          variant: "danger",
+          icon: <Trash2 className="w-4 h-4" />
+        },
       ],
       search: { enabled: true, placeholder: "Search admins..." },
-      pagination: { enabled: true, pageSize: 10 },
+      pagination: { enabled: true, pageSize: 10 }
     },
 
     formConfig: {
@@ -278,10 +312,10 @@ const AdminsPage = () => {
           placeholder: "Search by department...",
         },
       ],
-    },
+    }
   };
 
   return <CrudPage config={config} />;
 };
 
-export default AdminsPage;
+export default AdminsPage
