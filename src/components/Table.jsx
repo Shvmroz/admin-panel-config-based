@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { MoveHorizontal as MoreHorizontal, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { MoreVertical, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { createPortal } from "react-dom";
 import Button from "./Button";
 
@@ -228,7 +228,7 @@ const Table = ({ config }) => {
                         onClick={(e) => handleMenuToggle(item.id, e)}
                         className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md transition primary-text"
                       >
-                        <MoreHorizontal className="h-5 w-5" />
+                        <MoreVertical className="h-5 w-5" />
                       </button>
                     </td>
                   )}
