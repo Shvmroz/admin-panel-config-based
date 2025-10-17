@@ -203,36 +203,3 @@ const CrudPage = ({ config }) => {
 };
 
 export default CrudPage;
-          <>
-            <Button
-              variant="outlined"
-              onClick={() => handlers.onModalClose?.('delete')}
-              disabled={modals.formLoading}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={handlers.onDelete}
-              disabled={modals.formLoading}
-            >
-              {modals.formLoading ? 'Deleting...' : 'Delete'}
-            </Button>
-          </>
-        }
-      >
-        <div className="text-center py-4">
-          <p className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-            Are you sure you want to delete this item?
-          </p>
-          <p className="text-gray-600 dark:text-gray-400">
-            This action cannot be undone. The item "{modals.selectedItem?.name || modals.selectedItem?.email}" will be permanently removed.
-          </p>
-        </div>
-      </Modal>
-    </div>
-  );
-};
-
-export default CrudPage;
