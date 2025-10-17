@@ -100,7 +100,6 @@ const AdminsPage = () => {
         { 
           key: "id", 
           title: "#",
-          description: "Unique identifier"
         },
         {
           key: "user",
