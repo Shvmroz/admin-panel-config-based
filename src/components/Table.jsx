@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { MoreVertical, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { MoveVertical as MoreVertical, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { createPortal } from "react-dom";
 import Button from "./Button";
 
