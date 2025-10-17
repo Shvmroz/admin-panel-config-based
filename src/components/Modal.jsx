@@ -10,7 +10,8 @@ const Modal = ({
   size = "md", 
   actions,
   showDefaultClose = true,
-  footerConfig = null
+  footerConfig = null,
+  hideFooter = false
 }) => {
   if (!isOpen) return null;
 
@@ -44,7 +45,7 @@ const Modal = ({
 
           <div className="flex-1 overflow-y-auto p-4">{children}</div>
 
-          {(actions || footerConfig || showDefaultClose) && (
+          {!hideFooter && (actions || footerConfig || showDefaultClose) && (
             <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-700 flex-shrink-0 gap-3">
               {actions}
               {footerConfig && (
@@ -54,7 +55,7 @@ const Modal = ({
                       onClick={footerConfig.onSubmit}
                       disabled={footerConfig.loading}
                       variant="contained"
-                      color="primary"
+                      color={footerConfig.submitColor || "primary"}
                     >
                       {footerConfig.loading ? (
                         <div className="flex items-center">
@@ -70,7 +71,8 @@ const Modal = ({
                     <Button
                       onClick={footerConfig.onCancel || onClose}
                       disabled={footerConfig.loading}
-                      variant="outlined"
+                      variant={footerConfig.cancelVariant || "outlined"}
+                      color={footerConfig.cancelColor || "default"}
                     >
                       {footerConfig.cancelText || 'Cancel'}
                     </Button>

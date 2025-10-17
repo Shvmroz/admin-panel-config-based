@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Input } from './Input';
+import Button from './Button';
 
 const Form = ({ config, onSubmit, initialData = {}, loading = false, hideButtons = false }) => {
   const { input_fields = [], fields = input_fields, submitButtonText = 'Submit', submitText = submitButtonText } = config;

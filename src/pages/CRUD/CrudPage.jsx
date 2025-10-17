@@ -21,8 +21,8 @@ const CrudPage = ({ config }) => {
 
   const FilterComponent = filterConfig?.FilterComponent;
   const [showFilterSidebar, setShowFilterSidebar] = React.useState(false);
-  const addFormRef = React.useRef();
-  const editFormRef = React.useRef();
+  const addFormRef = React.useRef(null);
+  const editFormRef = React.useRef(null);
 
   const handleFilterToggle = () => {
     setShowFilterSidebar(prev => !prev);
@@ -42,6 +42,24 @@ const CrudPage = ({ config }) => {
         break;
       default:
         break;
+    }
+  };
+
+  const handleAddFormSubmit = () => {
+    if (addFormRef.current) {
+      const formData = addFormRef.current.getData();
+      if (addFormRef.current.isValid()) {
+        formConfig.handlers?.onSubmit?.(formData);
+      }
+    }
+  };
+
+  const handleEditFormSubmit = () => {
+    if (editFormRef.current) {
+      const formData = editFormRef.current.getData();
+      if (editFormRef.current.isValid()) {
+        formConfig.handlers?.onSubmit?.(formData);
+      }
     }
   };
 
@@ -113,7 +131,7 @@ const CrudPage = ({ config }) => {
           submitText: formConfig.add?.submitButtonText || 'Create',
           cancelText: 'Cancel',
           loading: modals.formLoading,
-          onSubmit: () => handleFormSubmit('add'),
+          onSubmit: handleAddFormSubmit,
           onCancel: () => formConfig.handlers?.onModalClose?.('add')
         }}
         showDefaultClose={false}
@@ -123,7 +141,7 @@ const CrudPage = ({ config }) => {
             ...formConfig.add,
             ref: addFormRef
           }}
-          onSubmit={formConfig.handlers?.onSubmit}
+          onSubmit={() => {}} // Empty function since we handle externally
           hideButtons={true}
         />
       </Modal>
@@ -139,7 +157,7 @@ const CrudPage = ({ config }) => {
           submitText: formConfig.edit?.submitButtonText || 'Update',
           cancelText: 'Cancel',
           loading: modals.formLoading,
-          onSubmit: () => handleFormSubmit('edit'),
+          onSubmit: handleEditFormSubmit,
           onCancel: () => formConfig.handlers?.onModalClose?.('edit')
         }}
         showDefaultClose={false}
@@ -149,7 +167,7 @@ const CrudPage = ({ config }) => {
             ...formConfig.edit,
             ref: editFormRef
           }}
-          onSubmit={formConfig.handlers?.onSubmit}
+          onSubmit={() => {}} // Empty function since we handle externally
           initialData={modals.selectedItem}
           hideButtons={true}
         />
@@ -163,6 +181,7 @@ const CrudPage = ({ config }) => {
           submitButton: true,
           cancelButton: true,
           submitText: 'Delete',
+          submitColor: 'error',
           cancelText: 'Cancel',
           loading: modals.formLoading,
           onSubmit: handlers.onDelete,
