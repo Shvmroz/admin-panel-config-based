@@ -4,7 +4,7 @@ This guide explains the streamlined configuration structure for the admin panel.
 
 ## Overview
 
-The admin panel uses a single configuration object that handles all CRUD operations. Everything is managed from the parent page component, making it easy to create new admin pages.
+The admin panel uses separate configuration objects that merge into one main config. Everything is managed from the parent page component, making it easy to create new admin pages.
 
 ## Primary Color System
 
@@ -31,65 +31,62 @@ To change the app's primary color, update the CSS variables in `src/index.css`:
 }
 ```
 
-## Configuration Structure
+## Configuration Structure - Separate Configs
+
+Instead of one large config object, we now use separate configs that merge together:
 
 ```javascript
+// Table Configuration
+const tableConfig = {
+  columns: [...],
+  actions: [...],
+  search: { enabled: true, placeholder: "Search..." },
+  pagination: { enabled: true, pageSize: 10 }
+};
+
+// Form Configuration
+const formConfig = {
+  add: { fields: [...], submitText: "Create" },
+  edit: { fields: [...], submitText: "Update" }
+};
+
+// Filter Configuration (optional)
+const filterConfig = {
+  fields: [...]
+};
+
+// Main Configuration - Merge all configs
 const config = {
-  // Page info
   title: "Admin Management",
-  description: "Manage system administrators",
-  
-  // Data and state
   data: filteredData,
   loading: false,
-  
-  // Event handlers
   onView: handleView,
   onSubmit: handleSubmit,
   onDelete: handleDelete,
   onFilterApply: setFilters,
-  
-  // Table configuration
-  tableConfig: {
-    columns: [...],
-    actions: [...],
-    search: { enabled: true, placeholder: "Search..." },
-    pagination: { enabled: true, pageSize: 10 }
-  },
-  
-  // Form configuration
-  formConfig: {
-    add: { fields: [...], submitText: "Create" },
-    edit: { fields: [...], submitText: "Update" }
-  },
-  
-  // Filter configuration (optional)
-  filterConfig: {
-    fields: [...]
-  }
+  tableConfig,
+  formConfig,
+  filterConfig
 };
 ```
 
 ## Table Configuration
 
 ### Columns
-Each column supports:
+Each column is simple and clean:
 - `key`: Data property key
 - `title`: Column header
-- `description`: Optional subtitle under header
 - `render`: Optional custom render function
 
 ```javascript
 columns: [
   {
     key: "name",
-    title: "Full Name",
-    description: "User's display name"
+    title: "Full Name"
   },
   {
     key: "status",
     title: "Status",
-    description: "Account status",
     render: (value) => <StatusBadge status={value} />
   }
 ]
@@ -234,58 +231,64 @@ const AdminsPage = () => {
     // Delete logic
   };
 
+  // Table Configuration
+  const tableConfig = {
+    columns: [
+      { key: "name", title: "Name" },
+      { key: "email", title: "Email" }
+    ],
+    actions: [
+      { title: "Edit", type: "edit", icon: <EditIcon /> },
+      { title: "Delete", type: "delete", icon: <DeleteIcon /> }
+    ],
+    search: { enabled: true },
+    pagination: { enabled: true, pageSize: 10 }
+  };
+  
+  // Form Configuration
+  const formConfig = {
+    add: {
+      fields: [
+        { key: "name", label: "Name", type: "text", required: true },
+        { key: "email", label: "Email", type: "email", required: true }
+      ],
+      submitText: "Create Admin"
+    },
+    edit: {
+      fields: [
+        { key: "name", label: "Name", type: "text", required: true },
+        { key: "email", label: "Email", type: "email", required: true }
+      ],
+      submitText: "Update Admin"
+    }
+  };
+  
+  // Filter Configuration
+  const filterConfig = {
+    fields: [
+      {
+        key: "status",
+        label: "Status",
+        type: "select",
+        options: [
+          { value: "active", label: "Active" },
+          { value: "inactive", label: "Inactive" }
+        ]
+      }
+    ]
+  };
+
+  // Main Configuration - Merge all configs
   const config = {
     title: "Admin Management",
-    description: "Manage administrators",
     data: filteredData,
     loading,
     onSubmit: handleSubmit,
     onDelete: handleDelete,
     onFilterApply: setFilters,
-    
-    tableConfig: {
-      columns: [
-        { key: "name", title: "Name", description: "Full name" },
-        { key: "email", title: "Email", description: "Contact email" }
-      ],
-      actions: [
-        { title: "Edit", type: "edit", icon: <EditIcon /> },
-        { title: "Delete", type: "delete", icon: <DeleteIcon /> }
-      ],
-      search: { enabled: true },
-      pagination: { enabled: true, pageSize: 10 }
-    },
-    
-    formConfig: {
-      add: {
-        fields: [
-          { key: "name", label: "Name", type: "text", required: true },
-          { key: "email", label: "Email", type: "email", required: true }
-        ],
-        submitText: "Create Admin"
-      },
-      edit: {
-        fields: [
-          { key: "name", label: "Name", type: "text", required: true },
-          { key: "email", label: "Email", type: "email", required: true }
-        ],
-        submitText: "Update Admin"
-      }
-    },
-    
-    filterConfig: {
-      fields: [
-        {
-          key: "status",
-          label: "Status",
-          type: "select",
-          options: [
-            { value: "active", label: "Active" },
-            { value: "inactive", label: "Inactive" }
-          ]
-        }
-      ]
-    }
+    tableConfig,
+    formConfig,
+    filterConfig
   };
 
   return <CrudPage config={config} />;

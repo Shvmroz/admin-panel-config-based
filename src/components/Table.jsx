@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { MoveVertical as MoreVertical, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { MoreHorizontal, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { createPortal } from "react-dom";
 import Button from "./Button";
 
@@ -183,11 +183,6 @@ const Table = ({ config }) => {
                   className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider min-w-max max-w-[180px] truncate"
                 >
                   {col.title}
-                  {col.description && (
-                    <div className="text-xs text-gray-500 dark:text-gray-400 font-normal normal-case mt-1">
-                      {col.description}
-                    </div>
-                  )}
                 </th>
               ))}
               {actions.length > 0 && (
@@ -233,7 +228,7 @@ const Table = ({ config }) => {
                         onClick={(e) => handleMenuToggle(item.id, e)}
                         className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md transition primary-text"
                       >
-                        <MoreVertical className="h-5 w-5" />
+                        <MoreHorizontal className="h-5 w-5" />
                       </button>
                     </td>
                   )}
