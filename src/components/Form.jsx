@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Input } from './Input';
-import Button from './Button';
 
-const Form = ({ config, onSubmit, initialData = {}, loading = false }) => {
+const Form = ({ config, onSubmit, initialData = {}, loading = false, hideButtons = false }) => {
   const { input_fields = [], fields = input_fields, submitButtonText = 'Submit', submitText = submitButtonText } = config;
   const [formData, setFormData] = useState(initialData);
   const [errors, setErrors] = useState({});
@@ -39,11 +38,18 @@ const Form = ({ config, onSubmit, initialData = {}, loading = false }) => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (validateForm()) {
       onSubmit(formData);
     }
   };
+
+  // Expose form submission method for external use
+  React.useImperativeHandle(config.ref, () => ({
+    submit: handleSubmit,
+    isValid: () => validateForm(),
+    getData: () => formData
+  }), [formData]);
 
   const renderField = (field) => {
     const { key, label, type, required, options, placeholder, rows } = field;
@@ -91,7 +97,7 @@ const Form = ({ config, onSubmit, initialData = {}, loading = false }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={hideButtons ? undefined : handleSubmit} className="space-y-4">
       {fields.map(field => (
         <div key={field.key}>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -105,7 +111,30 @@ const Form = ({ config, onSubmit, initialData = {}, loading = false }) => {
         </div>
       ))}
 
-      <div className="flex justify-end space-x-3 pt-4">
+      {!hideButtons && (
+        <div className="flex justify-end space-x-3 pt-4">
+          <Button
+            type="submit"
+            disabled={loading}
+            variant="contained"
+            color="primary"
+          >
+            {loading ? (
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-2 border-t-white mr-2"></div>
+                {submitText}...
+              </div>
+            ) : (
+              submitText
+            )}
+          </Button>
+        </div>
+      )}
+    </form>
+  );
+};
+
+export default Form;
         <Button
           type="submit"
           disabled={loading}

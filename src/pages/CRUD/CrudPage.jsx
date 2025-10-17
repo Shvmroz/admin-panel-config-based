@@ -21,6 +21,8 @@ const CrudPage = ({ config }) => {
 
   const FilterComponent = filterConfig?.FilterComponent;
   const [showFilterSidebar, setShowFilterSidebar] = React.useState(false);
+  const addFormRef = React.useRef();
+  const editFormRef = React.useRef();
 
   const handleFilterToggle = () => {
     setShowFilterSidebar(prev => !prev);
@@ -40,6 +42,13 @@ const CrudPage = ({ config }) => {
         break;
       default:
         break;
+    }
+  };
+
+  const handleFormSubmit = (type) => {
+    const formRef = type === 'add' ? addFormRef : editFormRef;
+    if (formRef.current) {
+      formRef.current.submit();
     }
   };
 
@@ -98,11 +107,24 @@ const CrudPage = ({ config }) => {
         onClose={() => formConfig.handlers?.onModalClose?.('add')}
         title={`Add New ${title.replace(' Management', '')}`}
         size="lg"
+        footerConfig={{
+          submitButton: true,
+          cancelButton: true,
+          submitText: formConfig.add?.submitButtonText || 'Create',
+          cancelText: 'Cancel',
+          loading: modals.formLoading,
+          onSubmit: () => handleFormSubmit('add'),
+          onCancel: () => formConfig.handlers?.onModalClose?.('add')
+        }}
+        showDefaultClose={false}
       >
         <Form
-          config={formConfig.add}
+          config={{
+            ...formConfig.add,
+            ref: addFormRef
+          }}
           onSubmit={formConfig.handlers?.onSubmit}
-          loading={modals.formLoading}
+          hideButtons={true}
         />
       </Modal>
 
@@ -111,20 +133,57 @@ const CrudPage = ({ config }) => {
         onClose={() => formConfig.handlers?.onModalClose?.('edit')}
         title={`Edit ${title.replace(' Management', '')}`}
         size="lg"
+        footerConfig={{
+          submitButton: true,
+          cancelButton: true,
+          submitText: formConfig.edit?.submitButtonText || 'Update',
+          cancelText: 'Cancel',
+          loading: modals.formLoading,
+          onSubmit: () => handleFormSubmit('edit'),
+          onCancel: () => formConfig.handlers?.onModalClose?.('edit')
+        }}
+        showDefaultClose={false}
       >
         <Form
-          config={formConfig.edit}
+          config={{
+            ...formConfig.edit,
+            ref: editFormRef
+          }}
           onSubmit={formConfig.handlers?.onSubmit}
           initialData={modals.selectedItem}
-          loading={modals.formLoading}
+          hideButtons={true}
         />
       </Modal>
 
       <Modal
         isOpen={modals.showDelete}
-        onClose={() => handlers.onModalClose?.('delete')}
+        onClose={() => formConfig.handlers?.onModalClose?.('delete')}
         title="Confirm Delete"
-        actions={
+        footerConfig={{
+          submitButton: true,
+          cancelButton: true,
+          submitText: 'Delete',
+          cancelText: 'Cancel',
+          loading: modals.formLoading,
+          onSubmit: handlers.onDelete,
+          onCancel: () => formConfig.handlers?.onModalClose?.('delete')
+        }}
+        showDefaultClose={false}
+      >
+        <div className="text-center py-4">
+          <p className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+            Are you sure you want to delete this item?
+          </p>
+          <p className="text-gray-600 dark:text-gray-400">
+            This action cannot be undone. The item "{modals.selectedItem?.name || modals.selectedItem?.email}" will be permanently removed.
+          </p>
+        </div>
+      </Modal>
+    </div>
+  );
+};
+
+export default CrudPage;
           <>
             <Button
               variant="outlined"
