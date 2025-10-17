@@ -7,7 +7,6 @@ const Table = ({ config }) => {
   const {
     data = [],
     table_head = [],
-    columns = table_head,
     menu_actions = [],
     actions = menu_actions,
     loading = false,
@@ -23,10 +22,11 @@ const Table = ({ config }) => {
   const menuRef = useRef(null);
   const buttonRefs = useRef({});
 
+  // ✅ Search filter using table_head
   const filteredData = useMemo(() => {
-    if (!search.enabled || !searchTerm) return data;
+    if (!search.enabled || !searchTerm.trim()) return data;
     return data.filter((item) =>
-      columns.some((col) => {
+      table_head.some((col) => {
         const value = item[col.key];
         return (
           value &&
@@ -34,8 +34,9 @@ const Table = ({ config }) => {
         );
       })
     );
-  }, [data, searchTerm, columns, search.enabled]);
+  }, [data, searchTerm, table_head, search.enabled]);
 
+  // ✅ Pagination
   const paginatedData = useMemo(() => {
     if (!pagination.enabled) return filteredData;
     const start = (currentPage - 1) * pagination.pageSize;
@@ -44,6 +45,7 @@ const Table = ({ config }) => {
 
   const totalPages = Math.ceil(filteredData.length / pagination.pageSize);
 
+  // ✅ Menu actions logic remains unchanged
   const handleActionClick = (action, item, e) => {
     e.stopPropagation();
     setActiveMenu(null);
@@ -52,48 +54,38 @@ const Table = ({ config }) => {
 
   const handleMenuToggle = (itemId, e) => {
     e.stopPropagation();
-  
     const button = e.currentTarget;
     buttonRefs.current[itemId] = button;
     const rect = button.getBoundingClientRect();
-  
-    const menuWidth = 192; // 48 * 4 (w-48 = 192px)
-    const menuHeight = actions.length * 40; // Approximate height per item
+
+    const menuWidth = 192;
+    const menuHeight = actions.length * 40;
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
-  
-    // Calculate available space
+
     const spaceRight = viewportWidth - rect.right;
-    const spaceLeft = rect.left;
     const spaceBelow = viewportHeight - rect.bottom;
     const spaceAbove = rect.top;
-  
-    // Determine horizontal position (prefer opening to the left if not enough space on right)
+
     const openLeft = spaceRight < menuWidth;
     const left = openLeft ? rect.left - menuWidth + rect.width : rect.left;
-  
-    // Determine vertical position (prefer opening upward if not enough space below)
+
     const openUp = spaceBelow < menuHeight && spaceAbove > menuHeight;
     const top = openUp ? rect.top - menuHeight - 8 : rect.bottom + 8;
-  
-    // Ensure menu stays within viewport bounds
+
     const adjustedLeft = Math.max(8, Math.min(left, viewportWidth - menuWidth - 8));
     const adjustedTop = Math.max(8, Math.min(top, viewportHeight - menuHeight - 8));
-  
-    setMenuPosition({ 
-      top: adjustedTop, 
-      left: adjustedLeft 
-    });
+
+    setMenuPosition({ top: adjustedTop, left: adjustedLeft });
     setActiveMenu(activeMenu === itemId ? null : itemId);
   };
 
-  // Update menu position on scroll and resize
+  // ✅ Maintain menu position on scroll/resize
   useEffect(() => {
     const updatePosition = () => {
       if (activeMenu && buttonRefs.current[activeMenu]) {
         const button = buttonRefs.current[activeMenu];
         const rect = button.getBoundingClientRect();
-        
         const menuWidth = 192;
         const menuHeight = actions.length * 40;
         const viewportWidth = window.innerWidth;
@@ -112,89 +104,47 @@ const Table = ({ config }) => {
         const adjustedLeft = Math.max(8, Math.min(left, viewportWidth - menuWidth - 8));
         const adjustedTop = Math.max(8, Math.min(top, viewportHeight - menuHeight - 8));
 
-        setMenuPosition({ 
-          top: adjustedTop, 
-          left: adjustedLeft 
-        });
+        setMenuPosition({ top: adjustedTop, left: adjustedLeft });
       }
     };
 
-    window.addEventListener('scroll', updatePosition, true);
-    window.addEventListener('resize', updatePosition);
-    
+    window.addEventListener("scroll", updatePosition, true);
+    window.addEventListener("resize", updatePosition);
+
     return () => {
-      window.removeEventListener('scroll', updatePosition, true);
-      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
+      window.removeEventListener("resize", updatePosition);
     };
   }, [activeMenu, actions.length]);
 
-  // Prevent body scroll when menu is open
+  // ✅ Prevent scroll when menu open
   useEffect(() => {
-    if (activeMenu) {
-      // Store the current scroll position
-      const scrollX = window.pageXOffset;
-      const scrollY = window.pageYOffset;
-      
-      // Add styles to prevent scrolling
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.left = `-${scrollX}px`;
-      document.body.style.width = '100%';
+    if (!activeMenu) return;
+    const scrollY = window.scrollY;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+    document.body.style.overflowY = "hidden";
 
-      return () => {
-        // Restore scrolling and position
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.left = '';
-        document.body.style.width = '';
-        
-        // Restore scroll position
-        window.scrollTo(scrollX, scrollY);
-      };
-    }
+    return () => {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      document.body.style.overflowY = "";
+      window.scrollTo(0, scrollY);
+    };
   }, [activeMenu]);
 
+  // ✅ Close menu on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setActiveMenu(null);
       }
     };
-    
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
-
-  // Prevent scroll when menu is open
-  useEffect(() => {
-    if (activeMenu) {
-      const scrollY = window.scrollY;
-  
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = "100%";
-      document.body.style.overflowY = "hidden";
-  
-      const preventScroll = (e) => e.preventDefault();
-      window.addEventListener("wheel", preventScroll, { passive: false });
-      window.addEventListener("touchmove", preventScroll, { passive: false });
-  
-      return () => {
-        document.body.style.position = "";
-        document.body.style.top = "";
-        document.body.style.width = "";
-        document.body.style.overflowY = "";
-  
-        window.removeEventListener("wheel", preventScroll);
-        window.removeEventListener("touchmove", preventScroll);
-  
-        window.scrollTo(0, scrollY);
-      };
-    }
-  }, [activeMenu]);
-  
 
   if (loading)
     return (
@@ -206,9 +156,9 @@ const Table = ({ config }) => {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-200 dark:border-gray-700">
-      {/* Search Bar */}
+      {/* ✅ Search Bar */}
       {search.enabled && (
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 max-w-[300px]">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
@@ -222,21 +172,21 @@ const Table = ({ config }) => {
         </div>
       )}
 
-      {/* Table */}
+      {/* ✅ Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-700/60">
             <tr>
-              {columns.map((col) => (
+              {table_head.map((col) => (
                 <th
                   key={col.key}
-                  className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider"
+                  className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider min-w-max max-w-[180px] truncate"
                 >
                   {col.title}
                 </th>
               ))}
               {actions.length > 0 && (
-                <th className="px-6 py-4 text-right text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-4 text-right text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider min-w-max max-w-[180px]">
                   Actions
                 </th>
               )}
@@ -247,7 +197,7 @@ const Table = ({ config }) => {
             {paginatedData.length === 0 ? (
               <tr>
                 <td
-                  colSpan={columns.length + (actions.length > 0 ? 1 : 0)}
+                  colSpan={table_head.length + (actions.length > 0 ? 1 : 0)}
                   className="text-center py-10 text-gray-500 dark:text-gray-400"
                 >
                   {emptyMessage}
@@ -259,10 +209,11 @@ const Table = ({ config }) => {
                   key={item.id || index}
                   className="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
                 >
-                  {columns.map((col) => (
+                  {table_head.map((col) => (
                     <td
                       key={col.key}
-                      className="px-6 py-5 text-sm text-gray-900 dark:text-gray-100"
+                      className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 min-w-max max-w-[300px] truncate"
+                      title={item[col.key]}
                     >
                       {col.render
                         ? col.render(item[col.key], item)
@@ -271,9 +222,9 @@ const Table = ({ config }) => {
                   ))}
 
                   {actions.length > 0 && (
-                    <td className="px-6 py-5 text-right">
+                    <td className="px-6 py-5 text-right min-w-max max-w-[120px]">
                       <button
-                        ref={el => buttonRefs.current[item.id] = el}
+                        ref={(el) => (buttonRefs.current[item.id] = el)}
                         onClick={(e) => handleMenuToggle(item.id, e)}
                         className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md transition"
                       >
@@ -288,13 +239,13 @@ const Table = ({ config }) => {
         </table>
       </div>
 
-      {/* Pagination */}
+      {/* ✅ Pagination */}
       {pagination.enabled && filteredData.length > 0 && (
         <div className="bg-gray-50 dark:bg-gray-700 px-6 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-600">
           <div className="text-sm text-gray-700 dark:text-gray-300">
             Showing {(currentPage - 1) * pagination.pageSize + 1} to{" "}
-            {Math.min(currentPage * pagination.pageSize, filteredData.length)}{" "}
-            of {filteredData.length} results
+            {Math.min(currentPage * pagination.pageSize, filteredData.length)} of{" "}
+            {filteredData.length} results
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -320,7 +271,7 @@ const Table = ({ config }) => {
         </div>
       )}
 
-      {/* Portal Menu */}
+      {/* ✅ Portal Menu */}
       {activeMenu &&
         createPortal(
           <div

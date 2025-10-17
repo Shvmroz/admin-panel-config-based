@@ -147,7 +147,7 @@ const AdminsPage = () => {
       onDelete: handleDelete
     },
     table_head: [
-      { key: "id", title: "ID" },
+      { key: "id", title: "#" },
       {
         key: "user",
         title: "User Info",
