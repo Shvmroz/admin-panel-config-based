@@ -136,24 +136,3 @@ const Form = ({ config, onSubmit, initialData = {}, loading = false, hideButtons
 };
 
 export default Form;
-        <Button
-          type="submit"
-          disabled={loading}
-          variant="contained"
-          color="primary"
-        >
-          {loading ? (
-            <div className="flex items-center">
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-2 border-t-white mr-2"></div>
-              {submitText}...
-            </div>
-          ) : (
-            submitText
-          )}
-        </Button>
-      </div>
-    </form>
-  );
-};
-
-export default Form;
