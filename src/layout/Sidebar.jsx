@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { cn } from "../lib/utils";
 
-import { Building2, ChartBar as BarChart3, Settings, Chrome as Home, Building, CreditCard, Mail, Receipt, Wrench, Calendar, Users, Network, MonitorCog, UserCog } from "lucide-react";
+import { Chrome as Home, UserCog } from "lucide-react";
 
 const menuItems = [
   {
@@ -30,12 +30,12 @@ const Sidebar = ({ open, onClose, variant = "temporary" }) => {
     <div className="h-full flex flex-col bg-white dark:bg-gray-900 shadow-xl border-r border-gray-200 dark:border-gray-700">
       <Link to="/dashboard">
         <div className="cursor-pointer h-16 pl-8 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-3">
-          <img 
+          {/* <img 
             src="/assets/logo.png" 
             alt="Logo" 
             className="w-8 h-8 object-contain"
-          />
-          <h1 className="text-gray-900 dark:text-white text-3xl font-bold leading-tight mt-1">
+          /> */}
+          <h1 className="text-gray-900 dark:text-white text-2xl font-bold leading-tight mt-1">
             Admin Portal
           </h1>
         </div>

@@ -1,5 +1,13 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { MoveVertical as MoreVertical, ChevronLeft, ChevronRight, Search } from "lucide-react";
+import {
+  MoveVertical as MoreVertical,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  MoreHorizontal,
+  DotIcon,
+  EllipsisVertical,
+} from "lucide-react";
 import { createPortal } from "react-dom";
 import Button from "./Button";
 
@@ -12,7 +20,7 @@ const Table = ({ config }) => {
     search = { enabled: false },
     pagination = { enabled: false, pageSize: 10 },
     emptyMessage = "No data available",
-    onMenuAction
+    onMenuAction,
   } = config;
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,7 +30,6 @@ const Table = ({ config }) => {
   const menuRef = useRef(null);
   const buttonRefs = useRef({});
 
-  // ✅ Search filter using table_head
   const filteredData = useMemo(() => {
     if (!search.enabled || !searchTerm.trim()) return data;
     return data.filter((item) =>
@@ -36,7 +43,6 @@ const Table = ({ config }) => {
     );
   }, [data, searchTerm, columns, search.enabled]);
 
-  // ✅ Pagination
   const paginatedData = useMemo(() => {
     if (!pagination.enabled) return filteredData;
     const start = (currentPage - 1) * pagination.pageSize;
@@ -45,7 +51,6 @@ const Table = ({ config }) => {
 
   const totalPages = Math.ceil(filteredData.length / pagination.pageSize);
 
-  // ✅ Menu actions logic remains unchanged
   const handleActionClick = (action, item, e) => {
     e.stopPropagation();
     setActiveMenu(null);
@@ -73,14 +78,19 @@ const Table = ({ config }) => {
     const openUp = spaceBelow < menuHeight && spaceAbove > menuHeight;
     const top = openUp ? rect.top - menuHeight - 8 : rect.bottom + 8;
 
-    const adjustedLeft = Math.max(8, Math.min(left, viewportWidth - menuWidth - 8));
-    const adjustedTop = Math.max(8, Math.min(top, viewportHeight - menuHeight - 8));
+    const adjustedLeft = Math.max(
+      8,
+      Math.min(left, viewportWidth - menuWidth - 8)
+    );
+    const adjustedTop = Math.max(
+      8,
+      Math.min(top, viewportHeight - menuHeight - 8)
+    );
 
     setMenuPosition({ top: adjustedTop, left: adjustedLeft });
     setActiveMenu(activeMenu === itemId ? null : itemId);
   };
 
-  // ✅ Maintain menu position on scroll/resize
   useEffect(() => {
     const updatePosition = () => {
       if (activeMenu && buttonRefs.current[activeMenu]) {
@@ -101,8 +111,14 @@ const Table = ({ config }) => {
         const openUp = spaceBelow < menuHeight && spaceAbove > menuHeight;
         const top = openUp ? rect.top - menuHeight - 8 : rect.bottom + 8;
 
-        const adjustedLeft = Math.max(8, Math.min(left, viewportWidth - menuWidth - 8));
-        const adjustedTop = Math.max(8, Math.min(top, viewportHeight - menuHeight - 8));
+        const adjustedLeft = Math.max(
+          8,
+          Math.min(left, viewportWidth - menuWidth - 8)
+        );
+        const adjustedTop = Math.max(
+          8,
+          Math.min(top, viewportHeight - menuHeight - 8)
+        );
 
         setMenuPosition({ top: adjustedTop, left: adjustedLeft });
       }
@@ -117,7 +133,6 @@ const Table = ({ config }) => {
     };
   }, [activeMenu, actions.length]);
 
-  // ✅ Prevent scroll when menu open
   useEffect(() => {
     if (!activeMenu) return;
     const scrollY = window.scrollY;
@@ -135,7 +150,6 @@ const Table = ({ config }) => {
     };
   }, [activeMenu]);
 
-  // ✅ Close menu on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -156,10 +170,10 @@ const Table = ({ config }) => {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-200 dark:border-gray-700">
-      {/* ✅ Search Bar */}
+      {/* Search Bar */}
       {search.enabled && (
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 max-w-[300px]">
-          <div className="relative">
+        <div className="flex justify-end p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="relative min-w-[300px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
@@ -172,7 +186,7 @@ const Table = ({ config }) => {
         </div>
       )}
 
-      {/* ✅ Table */}
+      {/*  Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-700/60">
@@ -226,9 +240,9 @@ const Table = ({ config }) => {
                       <button
                         ref={(el) => (buttonRefs.current[item.id] = el)}
                         onClick={(e) => handleMenuToggle(item.id, e)}
-                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md transition primary-text"
+                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md transition  text-gray-500 dark:text-gray-300"
                       >
-                        <MoreVertical className="h-5 w-5" />
+                        <EllipsisVertical className="h-5 w-5" />
                       </button>
                     </td>
                   )}
@@ -239,41 +253,37 @@ const Table = ({ config }) => {
         </table>
       </div>
 
-      {/* ✅ Pagination */}
+      {/* Pagination */}
       {pagination.enabled && filteredData.length > 0 && (
         <div className="bg-gray-50 dark:bg-gray-700 px-6 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-600">
           <div className="text-sm text-gray-700 dark:text-gray-300">
             Showing {(currentPage - 1) * pagination.pageSize + 1} to{" "}
-            {Math.min(currentPage * pagination.pageSize, filteredData.length)} of{" "}
-            {filteredData.length} results
+            {Math.min(currentPage * pagination.pageSize, filteredData.length)}{" "}
+            of {filteredData.length} results
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="outlined"
-              size="sm"
+            <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="primary-border primary-text"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md transition text-gray-500 dark:text-gray-300 cursor-pointer"
             >
               <ChevronLeft className="h-4 w-4" />
-            </Button>
+            </button>
             <span className="text-sm text-gray-800 dark:text-gray-200">
               Page {currentPage} of {totalPages}
             </span>
-            <Button
-              variant="outlined"
-              size="sm"
+            <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="primary-border primary-text"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md transition text-gray-500 dark:text-gray-300 cursor-pointer"
             >
               <ChevronRight className="h-4 w-4" />
-            </Button>
+            </button>
           </div>
         </div>
       )}
 
-      {/* ✅ Portal Menu */}
+      {/*  Portal Menu */}
       {activeMenu &&
         createPortal(
           <div

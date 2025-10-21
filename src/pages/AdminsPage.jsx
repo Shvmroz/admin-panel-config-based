@@ -227,6 +227,7 @@ const AdminsPage = () => {
           placeholder: "Additional information about this admin...",
         },
       ],
+      size:"md",
       submitText: "Create Admin",
     },
     edit: {
@@ -265,6 +266,7 @@ const AdminsPage = () => {
           placeholder: "Additional information about this admin...",
         },
       ],
+      size:"md",
       submitText: "Update Admin",
     },
   };

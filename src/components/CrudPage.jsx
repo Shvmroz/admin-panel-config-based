@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
-import { Plus, Filter } from 'lucide-react';
-import Table from './Table';
-import Modal from './Modal';
-import Form from './Form';
-import Button from './Button';
-import FilterSidebar from './Filter/FilterSidebar';
+import React, { useState } from "react";
+import { Plus, Filter } from "lucide-react";
+import Table from "./Table";
+import Modal from "./Modal";
+import Form from "./Form";
+import Button from "./Button";
+import FilterDrawer from "./Filter/FilterDrawer";
 
 const CrudPage = ({ config }) => {
   const {
     title,
-    description,
     data = [],
     loading = false,
     tableConfig = {},
@@ -20,7 +19,7 @@ const CrudPage = ({ config }) => {
     onDelete,
     onView,
     onSubmit,
-    onFilterApply
+    onFilterApply,
   } = config;
 
   const [showAdd, setShowAdd] = useState(false);
@@ -30,25 +29,23 @@ const CrudPage = ({ config }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
 
-  // Handle menu actions
   const handleMenuAction = (action, item) => {
     switch (action) {
-      case 'edit':
+      case "edit":
         setSelectedItem(item);
         setShowEdit(true);
         onEdit?.(item);
         break;
-      case 'view':
+      case "view":
         onView?.(item);
         break;
-      case 'delete':
+      case "delete":
         setSelectedItem(item);
         setShowDelete(true);
         break;
     }
   };
 
-  // Handle form submission
   const handleFormSubmit = async (formData) => {
     setFormLoading(true);
     try {
@@ -57,13 +54,12 @@ const CrudPage = ({ config }) => {
       setShowEdit(false);
       setSelectedItem(null);
     } catch (error) {
-      console.error('Form submission error:', error);
+      console.error("Form submission error:", error);
     } finally {
       setFormLoading(false);
     }
   };
 
-  // Handle delete confirmation
   const handleDeleteConfirm = async () => {
     setFormLoading(true);
     try {
@@ -71,13 +67,12 @@ const CrudPage = ({ config }) => {
       setShowDelete(false);
       setSelectedItem(null);
     } catch (error) {
-      console.error('Delete error:', error);
+      console.error("Delete error:", error);
     } finally {
       setFormLoading(false);
     }
   };
 
-  // Handle add button
   const handleAddClick = () => {
     setSelectedItem(null);
     setShowAdd(true);
@@ -85,26 +80,22 @@ const CrudPage = ({ config }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            {title}
+          </h1>
         </div>
         <div className="flex items-center space-x-3">
           {filterConfig && (
-            <Button
-              onClick={() => setShowFilters(true)}
-              variant="outlined"
-            >
+            <Button onClick={() => setShowFilters(true)} variant="contained">
               <Filter className="w-4 h-4 mr-2" />
               Filters
             </Button>
           )}
-          <Button
-            onClick={handleAddClick}
-            className="primary-bg primary-hover text-white"
-          >
+          <Button onClick={handleAddClick} variant="contained" color="primary">
             <Plus className="w-4 h-4 mr-2" />
             Add New
           </Button>
@@ -112,18 +103,18 @@ const CrudPage = ({ config }) => {
       </div>
 
       {/* Table */}
-      <Table 
+      <Table
         config={{
           ...tableConfig,
           data,
           loading,
-          onMenuAction: handleMenuAction
-        }} 
+          onMenuAction: handleMenuAction,
+        }}
       />
 
       {/* Filter Sidebar */}
       {filterConfig && (
-        <FilterSidebar
+        <FilterDrawer
           isOpen={showFilters}
           onClose={() => setShowFilters(false)}
           config={filterConfig}
@@ -135,10 +126,20 @@ const CrudPage = ({ config }) => {
       <Modal
         isOpen={showAdd}
         onClose={() => setShowAdd(false)}
-        title={`Add ${title.replace(' Management', '')}`}
-        size="lg"
+        title={`Add ${title.replace(" Management", "")}`}
+        size={formConfig.add?.size}
+        footerConfig={{
+          submitButton: true,
+          cancelButton: true,
+          onSubmit: () => document.querySelector("#addForm")?.requestSubmit(),
+          onCancel: () => setShowAdd(false),
+          loading: formLoading,
+          submitText: "Add",
+          cancelText: "Cancel",
+        }}
       >
         <Form
+          id="addForm"
           config={formConfig.add}
           onSubmit={handleFormSubmit}
           loading={formLoading}
@@ -149,10 +150,20 @@ const CrudPage = ({ config }) => {
       <Modal
         isOpen={showEdit}
         onClose={() => setShowEdit(false)}
-        title={`Edit ${title.replace(' Management', '')}`}
-        size="lg"
+        title={`Edit ${title.replace(" Management", "")}`}
+        size={formConfig.edit?.size}
+        footerConfig={{
+          submitButton: true,
+          cancelButton: true,
+          onSubmit: () => document.querySelector("#editForm")?.requestSubmit(),
+          onCancel: () => setShowEdit(false),
+          loading: formLoading,
+          submitText: "Save Changes",
+          cancelText: "Cancel",
+        }}
       >
         <Form
+          id="editForm"
           config={formConfig.edit}
           onSubmit={handleFormSubmit}
           initialData={selectedItem}
@@ -165,19 +176,18 @@ const CrudPage = ({ config }) => {
         isOpen={showDelete}
         onClose={() => setShowDelete(false)}
         title="Confirm Delete"
+        size="sm"
       >
         <div className="text-center py-4">
           <p className="text-lg font-medium text-gray-900 dark:text-white mb-2">
             Are you sure you want to delete this item?
           </p>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            "{selectedItem?.name || selectedItem?.email}" will be permanently removed.
+            "{selectedItem?.name || selectedItem?.email}" will be permanently
+            removed.
           </p>
           <div className="flex justify-end space-x-3">
-            <Button
-              onClick={() => setShowDelete(false)}
-              variant="outlined"
-            >
+            <Button onClick={() => setShowDelete(false)} variant="outlined">
               Cancel
             </Button>
             <Button
@@ -185,7 +195,7 @@ const CrudPage = ({ config }) => {
               disabled={formLoading}
               className="bg-red-600 hover:bg-red-700 text-white"
             >
-              {formLoading ? 'Deleting...' : 'Delete'}
+              {formLoading ? "Deleting..." : "Delete"}
             </Button>
           </div>
         </div>
