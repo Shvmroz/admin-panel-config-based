@@ -50,9 +50,15 @@ const AdminsPage = () => {
     }
   };
 
-  const handleDelete = (selectedItem) => {
-    setData((prev) => prev.filter((item) => item.id !== selectedItem.id));
-    enqueueSnackbar("Admin deleted successfully", { variant: "success" });
+  const handleDelete = async (selectedItem) => {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      setData(prev => prev.filter(item => item.id !== selectedItem.id));
+      enqueueSnackbar('Admin deleted successfully', { variant: 'success' });
+    } catch (error) {
+      enqueueSnackbar('Delete failed', { variant: 'error' });
+    }
   };
 
   const filteredData = useMemo(() => {
@@ -159,13 +165,8 @@ const AdminsPage = () => {
         icon: <Trash2 className="w-4 h-4" />,
       },
     ],
-    search: {
-      enabled: true,
-      placeholder: "Search admins...",
-      mode: "local",
-      searchableColumns: ["name", "email", "department", "status", "role"],
-    },
-    pagination: { enabled: true, pageSize: 10 },
+    search: { enabled: true, placeholder: "Search admins..." },
+    pagination: { enabled: true, pageSize: 10 }
   };
 
   const modalConfig = {
