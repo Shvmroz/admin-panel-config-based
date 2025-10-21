@@ -46,7 +46,7 @@ export default function App() {
       maxSnack={3}
       anchorOrigin={{
         vertical: "bottom",
-        horizontal: "right",
+        horizontal: "left",
       }}
       action={(snackbarKey) => (
         <button
