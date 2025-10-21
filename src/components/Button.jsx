@@ -66,6 +66,7 @@ const Button = React.forwardRef(
     return (
       <button
         ref={ref}
+        type={props.type || "button"}
         className={cn(
           baseStyles,
           colorStyles,

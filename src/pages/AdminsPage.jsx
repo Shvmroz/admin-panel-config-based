@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSnackbar } from "notistack";
 import { Eye, Pencil, Trash2, User } from "lucide-react";
 import CrudPage from "../components/CrudPage";
@@ -9,89 +9,70 @@ const AdminsPage = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({});
+  const [formLoading, setFormLoading] = useState(false);
 
   useEffect(() => {
-    fetchData();
+    setLoading(true);
+    setTimeout(() => {
+      setData(adminMockData);
+      setLoading(false);
+    }, 500);
   }, []);
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setData(adminMockData);
-    } catch (error) {
-      enqueueSnackbar('Failed to load data', { variant: 'error' });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleView = (item) => {
-    enqueueSnackbar(`Viewing details for ${item.name}`, { variant: 'info' });
+    enqueueSnackbar(`Viewing details for ${item.name}`, { variant: "info" });
   };
 
   const handleSubmit = async (formData, selectedItem) => {
+    setFormLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (selectedItem) {
-        setData(prev => prev.map(item =>
-          item.id === selectedItem.id ? { ...item, ...formData } : item
-        ));
-        enqueueSnackbar('Admin updated successfully', { variant: 'success' });
+        setData((prev) =>
+          prev.map((item) =>
+            item.id === selectedItem.id ? { ...item, ...formData } : item
+          )
+        );
+        enqueueSnackbar("Admin updated successfully", { variant: "success" });
       } else {
         const newItem = {
           ...formData,
-          id: Math.max(...data.map(d => d.id), 0) + 1,
-          createdAt: new Date().toISOString().split('T')[0],
-          lastLogin: 'Never'
+          id: Math.max(...data.map((d) => d.id), 0) + 1,
+          createdAt: new Date().toISOString().split("T")[0],
+          lastLogin: "Never",
         };
-        setData(prev => [newItem, ...prev]);
-        enqueueSnackbar('Admin added successfully', { variant: 'success' });
+        setData((prev) => [newItem, ...prev]);
+        enqueueSnackbar("Admin added successfully", { variant: "success" });
       }
-    } catch (error) {
-      enqueueSnackbar('Operation failed', { variant: 'error' });
+    } finally {
+      setFormLoading(false);
     }
   };
 
-  const handleDelete = async (selectedItem) => {
-    try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      setData(prev => prev.filter(item => item.id !== selectedItem.id));
-      enqueueSnackbar('Admin deleted successfully', { variant: 'success' });
-    } catch (error) {
-      enqueueSnackbar('Delete failed', { variant: 'error' });
-    }
+  const handleDelete = (selectedItem) => {
+    setData((prev) => prev.filter((item) => item.id !== selectedItem.id));
+    enqueueSnackbar("Admin deleted successfully", { variant: "success" });
   };
 
-  const filteredData = React.useMemo(() => {
+  const filteredData = useMemo(() => {
     let result = [...data];
-
-    if (filters.status) {
-      result = result.filter(item => item.status === filters.status);
-    }
-
-    if (filters.role) {
-      result = result.filter(item => item.role === filters.role);
-    }
-
-    if (filters.department) {
-      result = result.filter(item =>
-        item.department?.toLowerCase().includes(filters.department.toLowerCase())
+    if (filters.status)
+      result = result.filter((item) => item.status === filters.status);
+    if (filters.role)
+      result = result.filter((item) => item.role === filters.role);
+    if (filters.department)
+      result = result.filter((item) =>
+        item.department
+          ?.toLowerCase()
+          .includes(filters.department.toLowerCase())
       );
-    }
-
     return result;
   }, [data, filters]);
 
-  // Table Configuration
   const tableConfig = {
     columns: [
-      { 
-        key: "id", 
-        title: "#",
-      },
+      { key: "id", title: "#" },
       {
         key: "user",
         title: "User Info",
@@ -157,121 +138,147 @@ const AdminsPage = () => {
           </span>
         ),
       },
-      { 
-        key: "lastLogin", 
-        title: "Last Login",
-      },
-      { 
-        key: "createdAt", 
-        title: "Created Date",
-      },
+      { key: "lastLogin", title: "Last Login" },
+      { key: "createdAt", title: "Created Date" },
     ],
     actions: [
       {
         title: "Edit Admin",
         type: "edit",
-        icon: <Pencil className="w-4 h-4" />
+        icon: <Pencil className="w-4 h-4" />,
       },
       {
         title: "View Details",
         type: "view",
-        icon: <Eye className="w-4 h-4" />
+        icon: <Eye className="w-4 h-4" />,
       },
       {
         title: "Delete Admin",
         type: "delete",
         variant: "danger",
-        icon: <Trash2 className="w-4 h-4" />
+        icon: <Trash2 className="w-4 h-4" />,
       },
     ],
-    search: { enabled: true, placeholder: "Search admins..." },
-    pagination: { enabled: true, pageSize: 10 }
+    search: {
+      enabled: true,
+      placeholder: "Search admins...",
+      mode: "local",
+      searchableColumns: ["name", "email", "department", "status", "role"],
+    },
+    pagination: { enabled: true, pageSize: 10 },
   };
 
-  // Form Configuration
-  const formConfig = {
-    add: {
-      fields: [
-        { key: "name", label: "Full Name", type: "text", required: true },
-        { key: "email", label: "Email Address", type: "email", required: true },
-        { key: "password", label: "Password", type: "password", required: true },
-        {
-          key: "status",
-          label: "Status",
-          type: "select",
-          required: true,
-          options: [
-            { value: "active", label: "Active" },
-            { value: "inactive", label: "Inactive" },
-            { value: "pending", label: "Pending Activation" },
-          ],
-        },
-        {
-          key: "role",
-          label: "Admin Level",
-          type: "select",
-          required: true,
-          options: [
-            { value: "admin", label: "Super Administrator" },
-            { value: "moderator", label: "Moderator" },
-            { value: "user", label: "Limited Admin" },
-          ],
-        },
-        { key: "phone", label: "Phone Number", type: "tel" },
-        { key: "department", label: "Department", type: "text" },
-        {
-          key: "bio",
-          label: "Bio / Notes",
-          type: "textarea",
-          rows: 3,
-          placeholder: "Additional information about this admin...",
-        },
-      ],
-      size:"md",
-      submitText: "Create Admin",
+  const modalConfig = {
+    addModal: {
+      title: "Add New Admin",
+      formFields: {
+        config: [
+          { key: "name", label: "Full Name", type: "text", required: true },
+          {
+            key: "email",
+            label: "Email Address",
+            type: "email",
+            required: true,
+          },
+          {
+            key: "password",
+            label: "Password",
+            type: "password",
+            required: true,
+          },
+          {
+            key: "status",
+            label: "Status",
+            type: "select",
+            required: true,
+            options: [
+              { value: "active", label: "Active" },
+              { value: "inactive", label: "Inactive" },
+              { value: "pending", label: "Pending Activation" },
+            ],
+          },
+          {
+            key: "role",
+            label: "Admin Level",
+            type: "select",
+            required: true,
+            options: [
+              { value: "admin", label: "Super Administrator" },
+              { value: "moderator", label: "Moderator" },
+              { value: "user", label: "Limited Admin" },
+            ],
+          },
+          { key: "phone", label: "Phone Number", type: "tel" },
+          { key: "department", label: "Department", type: "text" },
+          {
+            key: "bio",
+            label: "Bio / Notes",
+            type: "textarea",
+            rows: 3,
+            placeholder: "Additional information about this admin...",
+          },
+        ],
+      },
+      footer: {
+        submitButton: true,
+        submitText: "Create Admin",
+        cancelButton: true,
+        cancelText: "Cancel",
+      },
     },
-    edit: {
-      fields: [
-        { key: "name", label: "Full Name", type: "text", required: true },
-        { key: "email", label: "Email Address", type: "email", required: true },
-        {
-          key: "status",
-          label: "Status",
-          type: "select",
-          required: true,
-          options: [
-            { value: "active", label: "Active" },
-            { value: "inactive", label: "Inactive" },
-            { value: "pending", label: "Pending Activation" },
-          ],
-        },
-        {
-          key: "role",
-          label: "Admin Level",
-          type: "select",
-          required: true,
-          options: [
-            { value: "admin", label: "Super Administrator" },
-            { value: "moderator", label: "Moderator" },
-            { value: "user", label: "Limited Admin" },
-          ],
-        },
-        { key: "phone", label: "Phone Number", type: "tel" },
-        { key: "department", label: "Department", type: "text" },
-        {
-          key: "bio",
-          label: "Bio / Notes",
-          type: "textarea",
-          rows: 3,
-          placeholder: "Additional information about this admin...",
-        },
-      ],
-      size:"md",
-      submitText: "Update Admin",
+    editModal: {
+      title: "Edit Admin",
+      formFields: {
+        config: [
+          { key: "name", label: "Full Name", type: "text", required: true },
+          {
+            key: "email",
+            label: "Email Address",
+            type: "email",
+            required: true,
+          },
+          {
+            key: "status",
+            label: "Status",
+            type: "select",
+            required: true,
+            options: [
+              { value: "active", label: "Active" },
+              { value: "inactive", label: "Inactive" },
+              { value: "pending", label: "Pending Activation" },
+            ],
+          },
+          {
+            key: "role",
+            label: "Admin Level",
+            type: "select",
+            required: true,
+            options: [
+              { value: "admin", label: "Super Administrator" },
+              { value: "moderator", label: "Moderator" },
+              { value: "user", label: "Limited Admin" },
+            ],
+          },
+          { key: "phone", label: "Phone Number", type: "tel" },
+          { key: "department", label: "Department", type: "text" },
+          {
+            key: "bio",
+            label: "Bio / Notes",
+            type: "textarea",
+            rows: 3,
+            placeholder: "Additional information about this admin...",
+          },
+        ],
+      },
+      footer: {
+        submitButton: true,
+        submitText: "Update Admin",
+        cancelButton: true,
+        cancelText: "Cancel",
+      },
     },
   };
 
-  // Filter Configuration
   const filterConfig = {
     fields: [
       {
@@ -303,7 +310,6 @@ const AdminsPage = () => {
     ],
   };
 
-  // Main Configuration - Merge all configs
   const config = {
     title: "Admin Management",
     data: filteredData,
@@ -313,11 +319,11 @@ const AdminsPage = () => {
     onDelete: handleDelete,
     onFilterApply: setFilters,
     tableConfig,
-    formConfig,
-    filterConfig
+    modalConfig,
+    filterConfig,
   };
 
-  return <CrudPage config={config} />;
+  return <CrudPage config={config} formLoading={formLoading} />;
 };
 
-export default AdminsPage
+export default AdminsPage;

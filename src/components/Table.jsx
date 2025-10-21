@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { createPortal } from "react-dom";
 import Button from "./Button";
+import { searchData } from "../lib/searchUtils";
 
 const Table = ({ config }) => {
   const {
@@ -21,27 +22,50 @@ const Table = ({ config }) => {
     pagination = { enabled: false, pageSize: 10 },
     emptyMessage = "No data available",
     onMenuAction,
+    onSearch,
   } = config;
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [activeMenu, setActiveMenu] = useState(null);
   const [menuPosition, setMenuPosition] = useState({});
+  const [isSearching, setIsSearching] = useState(false);
   const menuRef = useRef(null);
   const buttonRefs = useRef({});
+  const searchTimeoutRef = useRef(null);
+
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+
+    if (search.mode === "api" && onSearch) {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+
+      searchTimeoutRef.current = setTimeout(async () => {
+        setIsSearching(true);
+        try {
+          await onSearch(value);
+        } catch (error) {
+          console.error("Search error:", error);
+        } finally {
+          setIsSearching(false);
+        }
+      }, 300);
+    }
+  };
 
   const filteredData = useMemo(() => {
     if (!search.enabled || !searchTerm.trim()) return data;
-    return data.filter((item) =>
-      columns.some((col) => {
-        const value = item[col.key];
-        return (
-          value &&
-          value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      })
-    );
-  }, [data, searchTerm, columns, search.enabled]);
+
+    if (search.mode === "api") {
+      return data;
+    }
+
+    const searchableColumns = search.searchableColumns || columns.map(col => col.key);
+    return searchData(data, searchTerm, searchableColumns);
+  }, [data, searchTerm, columns, search]);
 
   const paginatedData = useMemo(() => {
     if (!pagination.enabled) return filteredData;
@@ -179,9 +203,15 @@ const Table = ({ config }) => {
               type="text"
               placeholder={search.placeholder || "Search..."}
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(e) => handleSearchChange(e.target.value)}
+              disabled={isSearching}
+              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
             />
+            {isSearching && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                <div className="animate-spin h-4 w-4 border-2 border-gray-300 border-t-blue-500 rounded-full"></div>
+              </div>
+            )}
           </div>
         </div>
       )}

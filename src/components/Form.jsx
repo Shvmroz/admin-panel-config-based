@@ -38,6 +38,7 @@ const Form = ({ config, onSubmit, initialData = {}, loading = false }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
+      console.log("Form data:", formData);
       onSubmit(formData);
     }
   };
@@ -90,7 +91,7 @@ const Form = ({ config, onSubmit, initialData = {}, loading = false }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} id={config.id} className="space-y-4">
       {fields.map((field) => (
         <div key={field.key}>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">

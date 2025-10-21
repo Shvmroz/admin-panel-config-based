@@ -6,7 +6,7 @@ import Form from "./Form";
 import Button from "./Button";
 import FilterDrawer from "./Filter/FilterDrawer";
 
-const CrudPage = ({ config }) => {
+const CrudPage = ({ config, formLoading }) => {
   const {
     title,
     data = [],
@@ -14,8 +14,6 @@ const CrudPage = ({ config }) => {
     tableConfig = {},
     formConfig = {},
     filterConfig = null,
-    onAdd,
-    onEdit,
     onDelete,
     onView,
     onSubmit,
@@ -27,67 +25,45 @@ const CrudPage = ({ config }) => {
   const [showDelete, setShowDelete] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [formLoading, setFormLoading] = useState(false);
 
   const handleMenuAction = (action, item) => {
-    switch (action) {
-      case "edit":
-        setSelectedItem(item);
-        setShowEdit(true);
-        onEdit?.(item);
-        break;
-      case "view":
-        onView?.(item);
-        break;
-      case "delete":
-        setSelectedItem(item);
-        setShowDelete(true);
-        break;
+    if (action === "edit") {
+      setSelectedItem(item);
+      setShowEdit(true);
+    } else if (action === "view") {
+      onView?.(item);
+    } else if (action === "delete") {
+      setSelectedItem(item);
+      setShowDelete(true);
     }
   };
 
   const handleFormSubmit = async (formData) => {
-    setFormLoading(true);
     try {
       await onSubmit?.(formData, selectedItem);
       setShowAdd(false);
       setShowEdit(false);
-      setSelectedItem(null);
-    } catch (error) {
-      console.error("Form submission error:", error);
     } finally {
-      setFormLoading(false);
+      setSelectedItem(null);
     }
   };
 
   const handleDeleteConfirm = async () => {
-    setFormLoading(true);
     try {
       await onDelete?.(selectedItem);
       setShowDelete(false);
-      setSelectedItem(null);
-    } catch (error) {
-      console.error("Delete error:", error);
     } finally {
-      setFormLoading(false);
+      setSelectedItem(null);
     }
-  };
-
-  const handleAddClick = () => {
-    setSelectedItem(null);
-    setShowAdd(true);
-    onAdd?.();
   };
 
   return (
     <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {title}
-          </h1>
-        </div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {title}
+        </h1>
         <div className="flex items-center space-x-3">
           {filterConfig && (
             <Button onClick={() => setShowFilters(true)} variant="contained">
@@ -95,7 +71,11 @@ const CrudPage = ({ config }) => {
               Filters
             </Button>
           )}
-          <Button onClick={handleAddClick} variant="contained" color="primary">
+          <Button
+            onClick={() => setShowAdd(true)}
+            variant="contained"
+            color="primary"
+          >
             <Plus className="w-4 h-4 mr-2" />
             Add New
           </Button>
@@ -112,7 +92,7 @@ const CrudPage = ({ config }) => {
         }}
       />
 
-      {/* Filter Sidebar */}
+      {/* Filter Drawer */}
       {filterConfig && (
         <FilterDrawer
           isOpen={showFilters}
@@ -129,19 +109,17 @@ const CrudPage = ({ config }) => {
         title={`Add ${title.replace(" Management", "")}`}
         size={formConfig.add?.size}
         footerConfig={{
-          submitButton: true,
+          submitButton: modalConfig.addModal.footer.submitButton,
           cancelButton: true,
           onSubmit: () => document.querySelector("#addForm")?.requestSubmit(),
           onCancel: () => setShowAdd(false),
           loading: formLoading,
-          submitText: "Add",
-          cancelText: "Cancel",
         }}
       >
         <Form
-          id="addForm"
-          config={formConfig.add}
+          config={{ ...formConfig.add, id: "addForm" }}
           onSubmit={handleFormSubmit}
+          initialData={{}}
           loading={formLoading}
         />
       </Modal>
@@ -163,8 +141,7 @@ const CrudPage = ({ config }) => {
         }}
       >
         <Form
-          id="editForm"
-          config={formConfig.edit}
+          config={{ ...formConfig.edit, id: "editForm" }}
           onSubmit={handleFormSubmit}
           initialData={selectedItem}
           loading={formLoading}
