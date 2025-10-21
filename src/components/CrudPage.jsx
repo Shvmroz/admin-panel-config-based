@@ -13,6 +13,7 @@ const CrudPage = ({ config, formLoading }) => {
     loading = false,
     tableConfig = {},
     formConfig = {},
+    modalConfig = {},
     filterConfig = null,
     onDelete,
     onView,
@@ -106,18 +107,17 @@ const CrudPage = ({ config, formLoading }) => {
       <Modal
         isOpen={showAdd}
         onClose={() => setShowAdd(false)}
-        title={`Add ${title.replace(" Management", "")}`}
-        size={formConfig.add?.size}
+        title={modalConfig.addModal?.title || `Add ${title.replace(" Management", "")}`}
+        size={modalConfig.addModal?.size || "md"}
         footerConfig={{
-          submitButton: modalConfig.addModal.footer.submitButton,
-          cancelButton: true,
+          ...modalConfig.addModal?.footer,
           onSubmit: () => document.querySelector("#addForm")?.requestSubmit(),
           onCancel: () => setShowAdd(false),
           loading: formLoading,
         }}
       >
         <Form
-          config={{ ...formConfig.add, id: "addForm" }}
+          config={{ ...modalConfig.addModal?.formFields, id: "addForm" }}
           onSubmit={handleFormSubmit}
           initialData={{}}
           loading={formLoading}
@@ -128,20 +128,17 @@ const CrudPage = ({ config, formLoading }) => {
       <Modal
         isOpen={showEdit}
         onClose={() => setShowEdit(false)}
-        title={`Edit ${title.replace(" Management", "")}`}
-        size={formConfig.edit?.size}
+        title={modalConfig.editModal?.title || `Edit ${title.replace(" Management", "")}`}
+        size={modalConfig.editModal?.size || "md"}
         footerConfig={{
-          submitButton: true,
-          cancelButton: true,
+          ...modalConfig.editModal?.footer,
           onSubmit: () => document.querySelector("#editForm")?.requestSubmit(),
           onCancel: () => setShowEdit(false),
           loading: formLoading,
-          submitText: "Save Changes",
-          cancelText: "Cancel",
         }}
       >
         <Form
-          config={{ ...formConfig.edit, id: "editForm" }}
+          config={{ ...modalConfig.editModal?.formFields, id: "editForm" }}
           onSubmit={handleFormSubmit}
           initialData={selectedItem}
           loading={formLoading}
