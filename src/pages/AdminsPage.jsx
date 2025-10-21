@@ -76,6 +76,10 @@ const AdminsPage = () => {
     return result;
   }, [data, filters]);
 
+  const handleSearch = async (searchTerm) => {
+    console.log('API search called with:', searchTerm);
+  };
+
   const tableConfig = {
     columns: [
       { key: "id", title: "#" },
@@ -165,8 +169,14 @@ const AdminsPage = () => {
         icon: <Trash2 className="w-4 h-4" />,
       },
     ],
-    search: { enabled: true, placeholder: "Search admins..." },
-    pagination: { enabled: true, pageSize: 10 }
+    search: {
+      enabled: true,
+      placeholder: "Search admins...",
+      useLocalSearch: true,
+      searchableColumns: ['name', 'email', 'department']
+    },
+    pagination: { enabled: true, pageSize: 10 },
+    onSearch: handleSearch
   };
 
   const modalConfig = {

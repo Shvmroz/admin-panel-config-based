@@ -27,7 +27,7 @@ const STATIC_USERS = [
 
 export const AppProvider = ({ children }) => {
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
@@ -48,6 +48,15 @@ export const AppProvider = ({ children }) => {
 
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    const handleCloseSnackbar = (event) => {
+      closeSnackbar(event.detail);
+    };
+
+    window.addEventListener('closeSnackbar', handleCloseSnackbar);
+    return () => window.removeEventListener('closeSnackbar', handleCloseSnackbar);
+  }, [closeSnackbar]);
 
   useEffect(() => {
     const savedDarkMode = localStorage.getItem("darkMode");

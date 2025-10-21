@@ -4,6 +4,7 @@ import AppRoutes from "./routes/Routes";
 import MainLayout from "./layout/MainLayout";
 import { Navigate, useLocation } from "react-router-dom";
 import Spinner from "./components/Spinner";
+import { X } from 'lucide-react';
 
 const AppInner = () => {
   const { isAuthenticated, loading } = useAppContext();
@@ -47,6 +48,16 @@ export default function App() {
         vertical: "bottom",
         horizontal: "right",
       }}
+      action={(snackbarKey) => (
+        <button
+          onClick={() => {
+            window.dispatchEvent(new CustomEvent('closeSnackbar', { detail: snackbarKey }));
+          }}
+          className="text-white hover:text-gray-200 transition"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      )}
     >
       <AppProvider>
         <AppInner />

@@ -18,7 +18,7 @@ const Table = ({ config }) => {
     columns = [],
     actions = [],
     loading = false,
-    search = { enabled: false },
+    search = { enabled: false, useLocalSearch: true },
     pagination = { enabled: false, pageSize: 10 },
     emptyMessage = "No data available",
     onMenuAction,
@@ -38,7 +38,7 @@ const Table = ({ config }) => {
     setSearchTerm(value);
     setCurrentPage(1);
 
-    if (search.mode === "api" && onSearch) {
+    if (!search.useLocalSearch && onSearch) {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
       }
@@ -59,7 +59,7 @@ const Table = ({ config }) => {
   const filteredData = useMemo(() => {
     if (!search.enabled || !searchTerm.trim()) return data;
 
-    if (search.mode === "api") {
+    if (!search.useLocalSearch) {
       return data;
     }
 
