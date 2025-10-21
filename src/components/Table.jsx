@@ -4,12 +4,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Search,
-  MoreHorizontal,
-  DotIcon,
   EllipsisVertical,
 } from "lucide-react";
 import { createPortal } from "react-dom";
-import Button from "./Button";
 import { searchData } from "../lib/searchUtils";
 
 const Table = ({ config }) => {
@@ -196,7 +193,7 @@ const Table = ({ config }) => {
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-200 dark:border-gray-700">
       {/* Search Bar */}
       {search.enabled && (
-        <div className="flex justify-end p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex justify-end p-4 bg-gray-100 dark:bg-gray-700/60">
           <div className="relative min-w-[300px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
@@ -219,7 +216,7 @@ const Table = ({ config }) => {
       {/*  Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-700/60">
+          <thead className="bg-gray-100 dark:bg-gray-700/60">
             <tr>
               {columns.map((col) => (
                 <th
@@ -285,7 +282,7 @@ const Table = ({ config }) => {
 
       {/* Pagination */}
       {pagination.enabled && filteredData.length > 0 && (
-        <div className="bg-gray-50 dark:bg-gray-700 px-6 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-600">
+        <div className="bg-gray-100 dark:bg-gray-700 px-6 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-600">
           <div className="text-sm text-gray-700 dark:text-gray-300">
             Showing {(currentPage - 1) * pagination.pageSize + 1} to{" "}
             {Math.min(currentPage * pagination.pageSize, filteredData.length)}{" "}
@@ -295,7 +292,7 @@ const Table = ({ config }) => {
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md transition text-gray-500 dark:text-gray-300 cursor-pointer"
+              className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition text-gray-500 dark:text-gray-300 cursor-pointer"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -305,7 +302,7 @@ const Table = ({ config }) => {
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md transition text-gray-500 dark:text-gray-300 cursor-pointer"
+              className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition text-gray-500 dark:text-gray-300 cursor-pointer"
             >
               <ChevronRight className="h-4 w-4" />
             </button>

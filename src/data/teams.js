@@ -1,4 +1,4 @@
-export const adminMockData = [
+export const mockData = [
   {
     id: 1,
     name: "John Doe",

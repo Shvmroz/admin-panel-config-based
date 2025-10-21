@@ -6,7 +6,7 @@ import Form from "./Form";
 import Button from "./Button";
 import FilterDrawer from "./Filter/FilterDrawer";
 
-const CrudPage = ({ config, formLoading }) => {
+const CrudPage = ({ config, formLoading = false }) => {
   const {
     title,
     data = [],
@@ -62,9 +62,12 @@ const CrudPage = ({ config, formLoading }) => {
     <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {title}
-        </h1>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            {title}
+          </h1>
+          <p className="text-md text-gray-600 dark:text-gray-400 mt-2">{config?.description}</p>
+        </div>
         <div className="flex items-center space-x-3">
           {filterConfig && (
             <Button onClick={() => setShowFilters(true)} variant="contained">
@@ -78,7 +81,7 @@ const CrudPage = ({ config, formLoading }) => {
             color="primary"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Add New
+            {config.buttonText || "Add New"}
           </Button>
         </div>
       </div>
@@ -107,7 +110,10 @@ const CrudPage = ({ config, formLoading }) => {
       <Modal
         isOpen={showAdd}
         onClose={() => setShowAdd(false)}
-        title={modalConfig.addModal?.title || `Add ${title.replace(" Management", "")}`}
+        title={
+          modalConfig.addModal?.title ||
+          `Add ${title.replace(" Management", "")}`
+        }
         size={modalConfig.addModal?.size || "md"}
         footerConfig={modalConfig.addModal?.footer}
         onFormSubmit={() => document.querySelector("#addForm")?.requestSubmit()}
@@ -115,9 +121,12 @@ const CrudPage = ({ config, formLoading }) => {
         loading={formLoading}
       >
         <Form
-          config={{ 
-            fields: modalConfig.addModal?.formFields?.config || formConfig.add?.fields || [],
-            id: "addForm" 
+          config={{
+            fields:
+              modalConfig.addModal?.formFields?.config ||
+              formConfig.add?.fields ||
+              [],
+            id: "addForm",
           }}
           onSubmit={handleFormSubmit}
           initialData={{}}
@@ -129,17 +138,25 @@ const CrudPage = ({ config, formLoading }) => {
       <Modal
         isOpen={showEdit}
         onClose={() => setShowEdit(false)}
-        title={modalConfig.editModal?.title || `Edit ${title.replace(" Management", "")}`}
+        title={
+          modalConfig.editModal?.title ||
+          `Edit ${title.replace(" Management", "")}`
+        }
         size={modalConfig.editModal?.size || "md"}
         footerConfig={modalConfig.editModal?.footer}
-        onFormSubmit={() => document.querySelector("#editForm")?.requestSubmit()}
+        onFormSubmit={() =>
+          document.querySelector("#editForm")?.requestSubmit()
+        }
         onCancel={() => setShowEdit(false)}
         loading={formLoading}
       >
         <Form
-          config={{ 
-            fields: modalConfig.editModal?.formFields?.config || formConfig.edit?.fields || [],
-            id: "editForm" 
+          config={{
+            fields:
+              modalConfig.editModal?.formFields?.config ||
+              formConfig.edit?.fields ||
+              [],
+            id: "editForm",
           }}
           onSubmit={handleFormSubmit}
           initialData={selectedItem}

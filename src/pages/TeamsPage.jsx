@@ -2,9 +2,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useSnackbar } from "notistack";
 import { Eye, Pencil, Trash2, User } from "lucide-react";
 import CrudPage from "../components/CrudPage";
-import { adminMockData } from "../data/admins";
+import { mockData } from "../data/teams";
 
-const AdminsPage = () => {
+const TeamsPage = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -14,7 +14,7 @@ const AdminsPage = () => {
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
-      setData(adminMockData);
+      setData(mockData);
       setLoading(false);
     }, 500);
   }, []);
@@ -34,7 +34,7 @@ const AdminsPage = () => {
             item.id === selectedItem.id ? { ...item, ...formData } : item
           )
         );
-        enqueueSnackbar("Admin updated successfully", { variant: "success" });
+        enqueueSnackbar("User updated successfully", { variant: "success" });
       } else {
         const newItem = {
           ...formData,
@@ -43,7 +43,7 @@ const AdminsPage = () => {
           lastLogin: "Never",
         };
         setData((prev) => [newItem, ...prev]);
-        enqueueSnackbar("Admin added successfully", { variant: "success" });
+        enqueueSnackbar("User added successfully", { variant: "success" });
       }
     } finally {
       setFormLoading(false);
@@ -52,12 +52,12 @@ const AdminsPage = () => {
 
   const handleDelete = async (selectedItem) => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
-      setData(prev => prev.filter(item => item.id !== selectedItem.id));
-      enqueueSnackbar('Admin deleted successfully', { variant: 'success' });
+      setData((prev) => prev.filter((item) => item.id !== selectedItem.id));
+      enqueueSnackbar("User deleted successfully", { variant: "success" });
     } catch (error) {
-      enqueueSnackbar('Delete failed', { variant: 'error' });
+      enqueueSnackbar("Delete failed", { variant: "error" });
     }
   };
 
@@ -77,26 +77,41 @@ const AdminsPage = () => {
   }, [data, filters]);
 
   const handleSearch = async (searchTerm) => {
-    console.log('API search called with:', searchTerm);
+    console.log("API search called with:", searchTerm);
   };
 
+  const formatPhoneNumber = (phone) => {
+    if (!phone) return "N/A";
+    return phone.replace(/(\+\d)(\d{3})(\d{3})(\d{3,})/, "$1 $2 $3 $4");
+  };
+  
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    });
+  };
+  
   const tableConfig = {
     columns: [
       { key: "id", title: "#" },
       {
         key: "user",
-        title: "User Info",
+        title: "Info",
         render: (value, row) => (
           <div className="flex items-center space-x-4">
             {row?.image ? (
               <img
                 src={row.image}
                 alt={row?.name || "User"}
-                className="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700"
+                className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-700"
               />
             ) : (
-              <div className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-600">
-                <User className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              <div className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 dark:border-gray-700 bg-gray-200 dark:bg-gray-600">
+                <User className="w-6 h-6 text-gray-400 dark:text-gray-400" />
               </div>
             )}
             <div>
@@ -111,25 +126,15 @@ const AdminsPage = () => {
         ),
       },
       {
-        key: "status",
-        title: "Status",
-        render: (value) => (
-          <span
-            className={`inline-flex items-center justify-center px-3 py-1 rounded-sm text-xs font-semibold border uppercase max-h-[24px] min-w-[78px] ${
-              value === "active"
-                ? "border-green-400 text-green-500 dark:border-green-600 dark:text-green-500"
-                : value === "inactive"
-                ? "border-red-400 text-red-500 dark:border-red-600 dark:text-red-500"
-                : "border-yellow-400 text-yellow-500 dark:border-yellow-600 dark:text-yellow-500"
-            }`}
-          >
-            {value}
-          </span>
+        key: "phone",
+        title: "Phone Number",
+        render: (value, row) => (
+          <span className="">{formatPhoneNumber(row.phone)}</span>
         ),
       },
       {
         key: "role",
-        title: "Admin Level",
+        title: "Role",
         render: (value) => (
           <span
             className={`inline-flex items-center px-3 py-1 rounded-sm text-xs font-medium ${
@@ -148,12 +153,37 @@ const AdminsPage = () => {
           </span>
         ),
       },
-      { key: "lastLogin", title: "Last Login" },
-      { key: "createdAt", title: "Created Date" },
+      {
+        key: "lastLogin",
+        title: "Last Login",
+        render: (value) => <span>{formatDate(value)}</span>,
+      },
+      {
+        key: "createdAt",
+        title: "Created Date",
+        render: (value) => <span>{formatDate(value)}</span>,
+      },
+      {
+        key: "status",
+        title: "Status",
+        render: (value) => (
+          <span
+            className={`inline-flex items-center justify-center px-3 py-1 rounded-sm text-xs font-semibold border uppercase max-h-[24px] min-w-[78px] ${
+              value === "active"
+                ? "border-green-400 text-green-500 dark:border-green-600 dark:text-green-500"
+                : value === "inactive"
+                ? "border-red-400 text-red-500 dark:border-red-600 dark:text-red-500"
+                : "border-yellow-400 text-yellow-500 dark:border-yellow-600 dark:text-yellow-500"
+            }`}
+          >
+            {value}
+          </span>
+        ),
+      },
     ],
     actions: [
       {
-        title: "Edit Admin",
+        title: "Edit Team Member",
         type: "edit",
         icon: <Pencil className="w-4 h-4" />,
       },
@@ -163,7 +193,7 @@ const AdminsPage = () => {
         icon: <Eye className="w-4 h-4" />,
       },
       {
-        title: "Delete Admin",
+        title: "Delete Team Member",
         type: "delete",
         variant: "danger",
         icon: <Trash2 className="w-4 h-4" />,
@@ -171,17 +201,18 @@ const AdminsPage = () => {
     ],
     search: {
       enabled: true,
-      placeholder: "Search admins...",
+      placeholder: "Search...",
       useLocalSearch: true,
-      searchableColumns: ['name', 'email', 'department']
+      searchableColumns: ["name", "email", "department"],
     },
     pagination: { enabled: true, pageSize: 10 },
-    onSearch: handleSearch
+    onSearch: handleSearch,
   };
+  
 
   const modalConfig = {
     addModal: {
-      title: "Add New Admin",
+      title: "Add New Team Member",
       formFields: {
         config: [
           { key: "name", label: "Full Name", type: "text", required: true },
@@ -210,7 +241,7 @@ const AdminsPage = () => {
           },
           {
             key: "role",
-            label: "Admin Level",
+            label: "Role",
             type: "select",
             required: true,
             options: [
@@ -226,19 +257,19 @@ const AdminsPage = () => {
             label: "Bio / Notes",
             type: "textarea",
             rows: 3,
-            placeholder: "Additional information about this admin...",
+            placeholder: "Additional information about this user...",
           },
         ],
       },
       footer: {
         submitButton: true,
-        submitText: "Create Admin",
+        submitText: "Add Member",
         cancelButton: true,
         cancelText: "Cancel",
       },
     },
     editModal: {
-      title: "Edit Admin",
+      title: "Edit Member",
       formFields: {
         config: [
           { key: "name", label: "Full Name", type: "text", required: true },
@@ -261,7 +292,7 @@ const AdminsPage = () => {
           },
           {
             key: "role",
-            label: "Admin Level",
+            label: "Role",
             type: "select",
             required: true,
             options: [
@@ -277,13 +308,13 @@ const AdminsPage = () => {
             label: "Bio / Notes",
             type: "textarea",
             rows: 3,
-            placeholder: "Additional information about this admin...",
+            placeholder: "Additional information about this member...",
           },
         ],
       },
       footer: {
         submitButton: true,
-        submitText: "Update Admin",
+        submitText: "Update Member",
         cancelButton: true,
         cancelText: "Cancel",
       },
@@ -322,7 +353,9 @@ const AdminsPage = () => {
   };
 
   const config = {
-    title: "Admin Management",
+    title: "Team Management",
+    description: "Manage team members and their roles and permissions",
+    buttonText: "Add New Member",
     data: filteredData,
     loading,
     onView: handleView,
@@ -337,4 +370,4 @@ const AdminsPage = () => {
   return <CrudPage config={config} formLoading={formLoading} />;
 };
 
-export default AdminsPage;
+export default TeamsPage;

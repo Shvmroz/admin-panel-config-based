@@ -1,10 +1,10 @@
-import { SnackbarProvider } from 'notistack';
+import { SnackbarProvider } from "notistack";
 import { AppProvider, useAppContext } from "./contexts/AppContext";
 import AppRoutes from "./routes/Routes";
 import MainLayout from "./layout/MainLayout";
 import { Navigate, useLocation } from "react-router-dom";
 import Spinner from "./components/Spinner";
-import { X } from 'lucide-react';
+import { X } from "lucide-react";
 
 const AppInner = () => {
   const { isAuthenticated, loading } = useAppContext();
@@ -46,16 +46,19 @@ export default function App() {
       maxSnack={3}
       anchorOrigin={{
         vertical: "bottom",
-        horizontal: "left",
+        horizontal: "right",
       }}
+      autoHideDuration={3000}
       action={(snackbarKey) => (
         <button
           onClick={() => {
-            window.dispatchEvent(new CustomEvent('closeSnackbar', { detail: snackbarKey }));
+            window.dispatchEvent(
+              new CustomEvent("closeSnackbar", { detail: snackbarKey })
+            );
           }}
-          className="text-white hover:text-gray-200 transition"
+          className="p-1 hover:bg-white/20 rounded-full transition-colors duration-200 text-white hover:text-gray-300 flex items-center justify-center"
         >
-          <X className="h-4 w-4" />
+          <X className="h-5 w-5" />
         </button>
       )}
     >

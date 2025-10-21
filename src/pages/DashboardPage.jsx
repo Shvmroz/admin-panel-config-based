@@ -3,31 +3,27 @@ import {
   TrendingUp,
   DollarSign,
   CreditCard,
-  ChevronRight,
   User,
   UserCog,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/Button";
 
 const dashboardData = {
   data: {
-    total_organizations: 150,
-    total_companies: 300,
-    total_revenue: 250000,
-    monthly_revenue: 45000,
-    total_users: 300,
-    active_subscriptions: 145,
-
+    total_users: 1200,
+    total_admins: 24,
+    total_revenue: 985000,
+    monthly_revenue: 78500,
+    active_subscriptions: 480,
   },
 };
 
 const MetricCard = ({ title, value, icon, color, bgColor, onClick }) => (
   <div
     onClick={onClick}
-    className={`${bgColor} dark:bg-gray-800 rounded-xl px-6 py-3 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all duration-200 hover:-translate-y-1 cursor-pointer relative overflow-hidden group`}
+    className={`${bgColor} dark:bg-gray-800 rounded-xl px-6 py-3 shadow-sm hover:shadow-lg border border-gray-200 dark:border-gray-600 cursor-pointer relative overflow-hidden group`}
   >
-    <div className="absolute top-1 right-1 w-20 h-20 opacity-10 transform rotate-12">
+    <div className="absolute top-1 right-1 w-20 h-20 opacity-10 rotate-12">
       {React.cloneElement(icon, {
         className: `w-full h-full ${color}`,
       })}
@@ -60,13 +56,13 @@ const DashboardPage = () => {
       title: "Total Users",
       value: data.total_users,
       icon: <User className="w-5 h-5" />,
-      color: "text-red-600",
-      bgColor: "bg-red-50 dark:bg-red-900/20",
+      color: "text-blue-600",
+      bgColor: "bg-blue-50 dark:bg-blue-900/20",
       path: "/users",
     },
     {
       title: "Total Admins",
-      value: 15,
+      value: data.total_admins,
       icon: <UserCog className="w-5 h-5" />,
       color: "text-purple-600",
       bgColor: "bg-purple-50 dark:bg-purple-900/20",
@@ -78,7 +74,7 @@ const DashboardPage = () => {
       icon: <CreditCard className="w-5 h-5" />,
       color: "text-indigo-600",
       bgColor: "bg-indigo-50 dark:bg-indigo-900/20",
-      path: "/dashboard",
+      path: "/subscriptions",
     },
     {
       title: "Monthly Revenue",
@@ -86,7 +82,7 @@ const DashboardPage = () => {
       icon: <TrendingUp className="w-5 h-5" />,
       color: "text-orange-600",
       bgColor: "bg-orange-50 dark:bg-orange-900/20",
-      path: "/dashboard",
+      path: "/reports",
     },
     {
       title: "Total Revenue",
@@ -94,7 +90,7 @@ const DashboardPage = () => {
       icon: <DollarSign className="w-5 h-5" />,
       color: "text-emerald-600",
       bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
-      path: "/dashboard",
+      path: "/reports",
     },
   ];
 
@@ -106,10 +102,9 @@ const DashboardPage = () => {
             Dashboard Overview
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Monitor your platform performance and key metrics
+            Monitor your platform performance and key insights
           </p>
         </div>
-       
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -121,8 +116,6 @@ const DashboardPage = () => {
           />
         ))}
       </div>
-
- 
     </div>
   );
 };

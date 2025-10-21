@@ -14,9 +14,9 @@ const menuItems = [
     bgColor: "bg-blue-50",
   },
   {
-    text: "Admins",
+    text: "My Team",
     icon: UserCog,
-    path: "/admins",
+    path: "/teams",
     color: "text-purple-500",
     bgColor: "bg-purple-50",
   },
