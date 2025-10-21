@@ -109,15 +109,10 @@ const CrudPage = ({ config, formLoading }) => {
         onClose={() => setShowAdd(false)}
         title={modalConfig.addModal?.title || `Add ${title.replace(" Management", "")}`}
         size={modalConfig.addModal?.size || "md"}
-        footerConfig={{
-          submitButton: modalConfig.addModal?.footer?.submitButton !== false,
-          submitText: modalConfig.addModal?.footer?.submitText || "Submit",
-          cancelButton: modalConfig.addModal?.footer?.cancelButton !== false,
-          cancelText: modalConfig.addModal?.footer?.cancelText || "Cancel",
-          onSubmit: () => document.querySelector("#addForm")?.requestSubmit(),
-          onCancel: () => setShowAdd(false),
-          loading: formLoading,
-        }}
+        footerConfig={modalConfig.addModal?.footer}
+        onFormSubmit={() => document.querySelector("#addForm")?.requestSubmit()}
+        onCancel={() => setShowAdd(false)}
+        loading={formLoading}
       >
         <Form
           config={{ 
@@ -136,15 +131,10 @@ const CrudPage = ({ config, formLoading }) => {
         onClose={() => setShowEdit(false)}
         title={modalConfig.editModal?.title || `Edit ${title.replace(" Management", "")}`}
         size={modalConfig.editModal?.size || "md"}
-        footerConfig={{
-          submitButton: modalConfig.editModal?.footer?.submitButton !== false,
-          submitText: modalConfig.editModal?.footer?.submitText || "Update",
-          cancelButton: modalConfig.editModal?.footer?.cancelButton !== false,
-          cancelText: modalConfig.editModal?.footer?.cancelText || "Cancel",
-          onSubmit: () => document.querySelector("#editForm")?.requestSubmit(),
-          onCancel: () => setShowEdit(false),
-          loading: formLoading,
-        }}
+        footerConfig={modalConfig.editModal?.footer}
+        onFormSubmit={() => document.querySelector("#editForm")?.requestSubmit()}
+        onCancel={() => setShowEdit(false)}
+        loading={formLoading}
       >
         <Form
           config={{ 
