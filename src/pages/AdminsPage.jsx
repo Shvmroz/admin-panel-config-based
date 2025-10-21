@@ -65,6 +65,16 @@ const AdminsPage = () => {
     }
   };
 
+  // const handleSearch = async (searchTerm) => {
+  //   try {
+  //     const response = await fetch(`/api/admins/search?q=${encodeURIComponent(searchTerm)}`);
+  //     const results = await response.json();
+  //     setData(results);
+  //   } catch (error) {
+  //     enqueueSnackbar('Search failed', { variant: 'error' });
+  //   }
+  // };
+
   const filteredData = React.useMemo(() => {
     let result = [...data];
 
@@ -184,7 +194,12 @@ const AdminsPage = () => {
         icon: <Trash2 className="w-4 h-4" />
       },
     ],
-    search: { enabled: true, placeholder: "Search admins..." },
+    search: {
+      enabled: true,
+      placeholder: "Search admins...",
+      mode: "local",
+      searchableColumns: ["name", "email", "department", "status", "role"]
+    },
     pagination: { enabled: true, pageSize: 10 }
   };
 

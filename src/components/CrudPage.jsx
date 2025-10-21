@@ -139,8 +139,7 @@ const CrudPage = ({ config }) => {
         }}
       >
         <Form
-          id="addForm"
-          config={formConfig.add}
+          config={{ ...formConfig.add, id: "addForm" }}
           onSubmit={handleFormSubmit}
           loading={formLoading}
         />
@@ -163,8 +162,7 @@ const CrudPage = ({ config }) => {
         }}
       >
         <Form
-          id="editForm"
-          config={formConfig.edit}
+          config={{ ...formConfig.edit, id: "editForm" }}
           onSubmit={handleFormSubmit}
           initialData={selectedItem}
           loading={formLoading}
