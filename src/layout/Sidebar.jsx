@@ -26,7 +26,7 @@ const Sidebar = ({ open, onClose, variant = "temporary" }) => {
   const sidebarContent = (
     <div className="h-full flex flex-col bg-gray-50 dark:bg-gray-800 shadow-xl border-r border-gray-200 dark:border-gray-700/60">
       <Link to="/dashboard">
-        <div className="cursor-pointer h-16 pl-8 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-3">
+        <div className="cursor-pointer h-16 pl-8 border-b border-gray-200 dark:border-gray-700/60 flex items-center space-x-3">
           <h1 className="text-gray-900 dark:text-white text-2xl font-bold leading-tight mt-1">
             CRUD Manager
           </h1>
