@@ -20,7 +20,9 @@ const STATIC_USERS = [
     password: "admin@gmail.com",
     first_name: "Admin",
     last_name: "Account",
-    role: "admin"
+    role: "admin",
+    phone: "+1 (555) 123-4567",
+    image: null
   },
 
 ];
