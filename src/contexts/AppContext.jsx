@@ -12,21 +12,6 @@ export const useAppContext = () => {
   return context;
 };
 
-// Static users for demo
-const STATIC_USERS = [
-  {
-    id: 1,
-    email: "admin@gmail.com",
-    password: "admin@gmail.com",
-    first_name: "Admin",
-    last_name: "Account",
-    role: "admin",
-    phone: "+1 (555) 123-4567",
-    image: null
-  },
-
-];
-
 export const AppProvider = ({ children }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -56,8 +41,8 @@ export const AppProvider = ({ children }) => {
       closeSnackbar(event.detail);
     };
 
-    window.addEventListener('closeSnackbar', handleCloseSnackbar);
-    return () => window.removeEventListener('closeSnackbar', handleCloseSnackbar);
+    window.addEventListener("closeSnackbar", handleCloseSnackbar);
+    return () => window.removeEventListener("closeSnackbar", handleCloseSnackbar);
   }, [closeSnackbar]);
 
   useEffect(() => {
@@ -77,20 +62,28 @@ export const AppProvider = ({ children }) => {
 
   const login = async (email, password) => {
     setLoading(true);
-    
+
     try {
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const foundUser = STATIC_USERS.find(u => u.email === email && u.password === password);
-      
-      if (foundUser) {
-        const { password: _, ...userWithoutPassword } = foundUser;
-        localStorage.setItem("authToken", "static-token-" + foundUser.id);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Example hardcoded user object (same structure as STATIC_USERS)
+      if (email === "admin@gmail.com" && password === "admin@gmail.com") {
+        const userWithoutPassword = {
+          id: 1,
+          email,
+          first_name: "Admin",
+          last_name: "Account",
+          role: "admin",
+          phone: "+15551234567",
+          image: null,
+        };
+
+        localStorage.setItem("authToken", "static-token-" + userWithoutPassword.id);
         localStorage.setItem("userData", JSON.stringify(userWithoutPassword));
         setUser(userWithoutPassword);
         setIsAuthenticated(true);
-        
+
         enqueueSnackbar("Login successful", { variant: "success" });
         return { success: true };
       } else {

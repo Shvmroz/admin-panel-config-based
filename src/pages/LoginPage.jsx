@@ -42,13 +42,13 @@ export default function LoginPage() {
                   Sign in to your admin account
                 </p>
               </div>
-              <div className="my-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium">
+              <div className="my-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg flex items-center gap-3">
+                <span className="text-sm text-yellow-800 dark:text-yellow-200 ">
                   Email & Password:
-                </p>
-                <p className="text-sm text-yellow-700 dark:text-blyellowue-300">
-                admin@gmail.com
-                                </p>
+                </span>
+                <span className="text-sm text-yellow-700 dark:text-blyellowue-300">
+                  admin@gmail.com
+                </span>
               </div>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>

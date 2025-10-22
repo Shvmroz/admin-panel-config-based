@@ -56,12 +56,9 @@ const ProfileSettingsPage = () => {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Update user context
+      // Update user context only (no localStorage)
       const updatedUser = { ...user, ...formData };
       setUser(updatedUser);
-
-      // Update localStorage
-      localStorage.setItem("userData", JSON.stringify(updatedUser));
 
       enqueueSnackbar("Profile updated successfully", { variant: "success" });
     } catch (error) {
@@ -97,49 +94,47 @@ const ProfileSettingsPage = () => {
         <form onSubmit={handleSubmit} className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
             {/* Left: Profile Image Section (col-span-4 on md+) */}
-           {/* Left: Profile Image Section (col-span-4 on md+) */}
-<div className="md:col-span-4 flex flex-col items-center space-y-4 w-full h-full">
-  <div className="relative w-full aspect-square max-w-xs">
-    {/* Square image fills entire container */}
-    <div className="absolute inset-0 overflow-hidden bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 shadow-md rounded-lg">
-      {imagePreview ? (
-        <img
-          src={imagePreview}
-          alt="Profile"
-          className="w-full h-full object-cover"
-        />
-      ) : (
-        <div className="w-full h-full flex items-center justify-center">
-          <User className="w-10 h-10 text-gray-400" />
-        </div>
-      )}
-    </div>
+            <div className="md:col-span-4 flex flex-col items-center space-y-4 w-full h-full">
+              <div className="relative w-full aspect-square max-w-xs">
+                {/* Square image fills entire container */}
+                <div className="absolute inset-0 overflow-hidden bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 shadow-md rounded-lg">
+                  {imagePreview ? (
+                    <img
+                      src={imagePreview}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <User className="w-10 h-10 text-gray-400" />
+                    </div>
+                  )}
+                </div>
 
-    {/* Upload Button */}
-    <button
-      type="button"
-      onClick={() => fileInputRef.current?.click()}
-      className="absolute bottom-2 right-2 w-9 h-9 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white shadow-lg transition-colors"
-    >
-      <Camera className="w-4 h-4" />
-    </button>
-  </div>
+                {/* Upload Button */}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute bottom-2 right-2 w-9 h-9 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white shadow-lg transition-colors"
+                >
+                  <Camera className="w-4 h-4" />
+                </button>
+              </div>
 
-  <input
-    ref={fileInputRef}
-    type="file"
-    accept="image/*"
-    onChange={handleImageChange}
-    className="hidden"
-  />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
 
-  <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-    Click the camera icon to upload a new profile picture
-    <br />
-    <span className="text-xs">Maximum file size: 5MB</span>
-  </p>
-</div>
-
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+                Click the camera icon to upload a new profile picture
+                <br />
+                <span className="text-xs">Maximum file size: 5MB</span>
+              </p>
+            </div>
 
             {/* Right: Form Fields (col-span-8 on md+) */}
             <div className="md:col-span-8 space-y-5">
@@ -217,7 +212,7 @@ const ProfileSettingsPage = () => {
                     <Phone className="h-5 w-5 text-gray-400" />
                   </div>
                   <Input
-                    type="tel"
+                    type="text"
                     value={formData.phone}
                     onChange={(e) => handleInputChange("phone", e.target.value)}
                     placeholder="Enter phone number"
