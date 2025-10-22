@@ -47,8 +47,8 @@ export default function LoginPage() {
                   Email & Password:
                 </p>
                 <p className="text-sm text-yellow-700 dark:text-blyellowue-300">
-                  admin@example.com
-                </p>
+                admin@gmail.com
+                                </p>
               </div>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>

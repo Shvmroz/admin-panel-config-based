@@ -16,10 +16,10 @@ export const useAppContext = () => {
 const STATIC_USERS = [
   {
     id: 1,
-    email: "admin@example.com",
-    password: "admin@example.com",
-    first_name: "Main",
-    last_name: "Admin",
+    email: "admin@gmail.com",
+    password: "admin@gmail.com",
+    first_name: "Admin",
+    last_name: "Account",
     role: "admin"
   },
 

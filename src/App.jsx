@@ -56,9 +56,9 @@ export default function App() {
               new CustomEvent("closeSnackbar", { detail: snackbarKey })
             );
           }}
-          className="p-1 hover:bg-white/20 rounded-full transition-colors duration-200 text-white hover:text-gray-300 flex items-center justify-center"
+          className="p-1 hover:bg-white/20 rounded-full transition-colors duration-200 text-white flex items-center justify-center"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
         </button>
       )}
     >

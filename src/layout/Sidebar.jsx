@@ -36,7 +36,7 @@ const Sidebar = ({ open, onClose, variant = "temporary" }) => {
             className="w-8 h-8 object-contain"
           /> */}
           <h1 className="text-gray-900 dark:text-white text-2xl font-bold leading-tight mt-1">
-            Admin Portal
+            CRUD Manager
           </h1>
         </div>
       </Link>
@@ -54,7 +54,7 @@ const Sidebar = ({ open, onClose, variant = "temporary" }) => {
               className={cn(
                 "flex items-center space-x-3 px-4 py-2 rounded-lg transition-all duration-200 group",
                 isActive
-                  ? "bg-blue-100 dark:bg-gray-800 text-sky-900 dark:text-sky-200 shadow-sm"
+                  ? "bg-sky-100 dark:bg-sky-800/20 text-sky-900 dark:text-gray-200 shadow-sm"
                   : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 hover:scale-102"
               )}
             >

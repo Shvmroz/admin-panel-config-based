@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useSnackbar } from "notistack";
 import { Eye, Pencil, Trash2, User } from "lucide-react";
-import CrudPage from "../components/CrudPage";
-import { mockData } from "../data/teams";
+import CrudPage from "../../components/CrudPage";
+import { mockData } from "../../data/teams";
+import { formatDate } from "../../lib/utils";
 
 const TeamsPage = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -20,7 +21,9 @@ const TeamsPage = () => {
   }, []);
 
   const handleView = (item) => {
-    enqueueSnackbar(`Viewing details for ${item.name}`, { variant: "info" });
+    enqueueSnackbar(`No detail available right now`, {
+      variant: "info",
+    });
   };
 
   const handleSubmit = async (formData, selectedItem) => {
@@ -80,21 +83,8 @@ const TeamsPage = () => {
     console.log("API search called with:", searchTerm);
   };
 
-  const formatPhoneNumber = (phone) => {
-    if (!phone) return "N/A";
-    return phone.replace(/(\+\d)(\d{3})(\d{3})(\d{3,})/, "$1 $2 $3 $4");
-  };
-  
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-    });
-  };
-  
+ 
+
   const tableConfig = {
     columns: [
       { key: "id", title: "#" },
@@ -129,7 +119,9 @@ const TeamsPage = () => {
         key: "phone",
         title: "Phone Number",
         render: (value, row) => (
-          <span className="">{formatPhoneNumber(row.phone)}</span>
+          <>
+            <span className="">{row.phone}</span>
+          </>
         ),
       },
       {
@@ -142,6 +134,10 @@ const TeamsPage = () => {
                 ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
                 : value === "moderator"
                 ? "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300"
+                : value === "editor"
+                ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
+                : value === "viewer"
+                ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300"
                 : "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300"
             }`}
           >
@@ -149,7 +145,11 @@ const TeamsPage = () => {
               ? "Super Admin"
               : value === "moderator"
               ? "Moderator"
-              : "User"}
+              : value === "editor"
+              ? "Editor"
+              : value === "viewer"
+              ? "Viewer"
+              : "No Role"}
           </span>
         ),
       },
@@ -208,7 +208,6 @@ const TeamsPage = () => {
     pagination: { enabled: true, pageSize: 10 },
     onSearch: handleSearch,
   };
-  
 
   const modalConfig = {
     addModal: {
@@ -247,7 +246,8 @@ const TeamsPage = () => {
             options: [
               { value: "admin", label: "Super Administrator" },
               { value: "moderator", label: "Moderator" },
-              { value: "user", label: "Limited Admin" },
+              { value: "editor", label: "Editor" },
+              { value: "viewer", label: "Viewer" },
             ],
           },
           { key: "phone", label: "Phone Number", type: "tel" },
@@ -298,7 +298,8 @@ const TeamsPage = () => {
             options: [
               { value: "admin", label: "Super Administrator" },
               { value: "moderator", label: "Moderator" },
-              { value: "user", label: "Limited Admin" },
+              { value: "editor", label: "Editor" },
+              { value: "viewer", label: "Viewer" },
             ],
           },
           { key: "phone", label: "Phone Number", type: "tel" },
@@ -340,14 +341,9 @@ const TeamsPage = () => {
         options: [
           { value: "admin", label: "Super Administrator" },
           { value: "moderator", label: "Moderator" },
-          { value: "user", label: "Limited Admin" },
+          { value: "editor", label: "Editor" },
+          { value: "viewer", label: "Viewer" },
         ],
-      },
-      {
-        key: "department",
-        label: "Department",
-        type: "text",
-        placeholder: "Search by department...",
       },
     ],
   };

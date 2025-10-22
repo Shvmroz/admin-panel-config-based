@@ -21,9 +21,10 @@ const dashboardData = {
 const MetricCard = ({ title, value, icon, color, bgColor, onClick }) => (
   <div
     onClick={onClick}
-    className={`${bgColor} dark:bg-gray-800 rounded-xl px-6 py-3 shadow-sm hover:shadow-lg border border-gray-200 dark:border-gray-600 cursor-pointer relative overflow-hidden group`}
+    className={`${bgColor} dark:bg-gray-800 rounded-xl px-6 py-3 shadow-sm hover:shadow-lg cursor-pointer relative overflow-hidden group`}
+ 
   >
-    <div className="absolute top-1 right-1 w-20 h-20 opacity-10 rotate-12">
+    <div className="absolute top-1 right-1 w-20 h-20 opacity-10">
       {React.cloneElement(icon, {
         className: `w-full h-full ${color}`,
       })}
@@ -46,6 +47,7 @@ const MetricCard = ({ title, value, icon, color, bgColor, onClick }) => (
     </div>
   </div>
 );
+
 
 const DashboardPage = () => {
   const navigate = useNavigate();
