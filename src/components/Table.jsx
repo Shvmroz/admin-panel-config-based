@@ -111,46 +111,46 @@ const Table = ({ config }) => {
     <div className="animate-pulse">
       {/* Search Bar Skeleton */}
       {search.enabled && (
-        <div className="flex justify-end p-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-t-lg">
+        <div className="flex justify-end p-5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-t-lg">
           <div className="relative min-w-[300px]">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
-            <div className="h-9 bg-gray-100 dark:bg-gray-800 w-full pl-10 pr-4 rounded-md"></div>
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-200 dark:bg-gray-600 rounded-full"></div>
+            <div className="h-10 bg-gray-100 dark:bg-gray-700 w-full pl-10 pr-4 rounded-md border border-gray-100 dark:border-gray-600"></div>
           </div>
         </div>
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto border border-gray-200 dark:border-gray-800 rounded-b-lg">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-100 dark:bg-gray-900">
+      <div className="overflow-x-auto border border-gray-100 dark:border-gray-700 rounded-b-lg">
+        <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
+          <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider"
+                  className="px-6 py-4 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider"
                 >
-                  <div className="h-3 bg-gray-200 dark:bg-gray-700 w-24 rounded"></div>
+                  <div className="h-3 bg-gray-100 dark:bg-gray-700 w-24 rounded"></div>
                 </th>
               ))}
               {actions.length > 0 && (
-                <th className="px-6 py-4 text-right text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                  <div className="h-3 bg-gray-200 dark:bg-gray-700 w-12 rounded"></div>
+                <th className="px-6 py-4 text-right text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                  <div className="h-3 bg-gray-100 dark:bg-gray-700 w-12 rounded"></div>
                 </th>
               )}
             </tr>
           </thead>
 
-          <tbody className="bg-gray-50 dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-700">
             {Array.from({ length: pagination.pageSize || 5 }).map((_, i) => (
               <tr key={i}>
                 {columns.map((col, idx) => (
-                  <td key={idx} className="px-6 py-4">
-                    <div className="h-4 bg-gray-100 dark:bg-gray-700 w-full rounded"></div>
+                  <td key={idx} className="px-6 py-5">
+                    <div className="h-4 bg-gray-50 dark:bg-gray-800 w-full rounded"></div>
                   </td>
                 ))}
                 {actions.length > 0 && (
-                  <td className="px-6 py-4">
-                    <div className="h-4 bg-gray-100 dark:bg-gray-700 w-10 ml-auto rounded"></div>
+                  <td className="px-6 py-5 text-right">
+                    <div className="h-4 bg-gray-50 dark:bg-gray-800 w-10 ml-auto rounded"></div>
                   </td>
                 )}
               </tr>
@@ -161,12 +161,12 @@ const Table = ({ config }) => {
 
       {/* Pagination Skeleton */}
       {pagination.enabled && (
-        <div className="bg-gray-50 dark:bg-gray-900 px-6 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-800 rounded-b-lg">
-          <div className="h-3 bg-gray-100 dark:bg-gray-700 w-40 rounded"></div>
+        <div className="bg-white dark:bg-gray-900 px-6 py-4 flex items-center justify-between border-t border-gray-100 dark:border-gray-700 rounded-b-lg">
+          <div className="h-3 bg-gray-50 dark:bg-gray-800 w-40 rounded"></div>
           <div className="flex items-center gap-2">
-            <div className="h-3 w-6 bg-gray-100 dark:bg-gray-700 rounded"></div>
-            <div className="h-3 w-20 bg-gray-100 dark:bg-gray-700 rounded"></div>
-            <div className="h-3 w-6 bg-gray-100 dark:bg-gray-700 rounded"></div>
+            <div className="h-3 w-6 bg-gray-50 dark:bg-gray-800 rounded"></div>
+            <div className="h-3 w-20 bg-gray-50 dark:bg-gray-800 rounded"></div>
+            <div className="h-3 w-6 bg-gray-50 dark:bg-gray-800 rounded"></div>
           </div>
         </div>
       )}
@@ -179,7 +179,7 @@ const Table = ({ config }) => {
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden border border-gray-200 dark:border-gray-700">
       {/* Search Bar */}
       {search.enabled && (
-        <div className="flex justify-end p-5 bg-gray-100 dark:bg-gray-800/60">
+        <div className="flex justify-end p-5 bg-gray-50 dark:bg-gray-800/60">
           <div className="relative min-w-[300px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-300" />
             <input
@@ -197,7 +197,7 @@ const Table = ({ config }) => {
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-100 dark:bg-gray-700/60">
+          <thead className="bg-gray-50 dark:bg-gray-700/60">
             <tr>
               {columns.map((col) => (
                 <th
@@ -229,7 +229,7 @@ const Table = ({ config }) => {
               paginatedData.map((item, index) => (
                 <tr
                   key={item.id || index}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                  className="hover:bg-gray-100 dark:hover:bg-gray-700 transition"
                 >
                   {columns.map((col) => (
                     <td
@@ -262,7 +262,7 @@ const Table = ({ config }) => {
 
       {/* Pagination */}
       {pagination.enabled && filteredData.length > 0 && (
-        <div className="bg-gray-100 dark:bg-gray-700/60 px-6 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-600">
+        <div className="bg-gray-50 dark:bg-gray-700/60 px-6 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-600">
           <div className="text-sm text-gray-700 dark:text-gray-300">
             Showing {(currentPage - 1) * pagination.pageSize + 1} to{" "}
             {Math.min(currentPage * pagination.pageSize, filteredData.length)}{" "}
