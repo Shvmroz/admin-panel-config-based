@@ -26,6 +26,7 @@ const CrudPage = ({ config }) => {
   const [showAdd, setShowAdd] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [showView, setShowView] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -34,7 +35,12 @@ const CrudPage = ({ config }) => {
       setSelectedItem(item);
       setShowEdit(true);
     } else if (action === "view") {
-      onView?.(item);
+      if (modalConfig.viewModal?.showModal) {
+        setSelectedItem(item);
+        setShowView(true);
+      } else {
+        onView?.(item);
+      }
     } else if (action === "delete") {
       setSelectedItem(item);
       setShowDelete(true);
@@ -191,6 +197,26 @@ const CrudPage = ({ config }) => {
           </div>
         </div>
       </Modal>
+
+      {/* View Detail Modal */}
+      {modalConfig.viewModal?.showModal && (
+        <Modal
+          isOpen={showView}
+          onClose={() => {
+            setShowView(false);
+            setSelectedItem(null);
+          }}
+          icon={modalConfig.viewModal?.icon}
+          title={modalConfig.viewModal?.title || "View Details"}
+          size={modalConfig.viewModal?.size || "lg"}
+          hideFooter={modalConfig.viewModal?.hideFooter ?? false}
+          showDefaultClose={!modalConfig.viewModal?.hideFooter}
+        >
+          {modalConfig.viewModal?.component && (
+            <modalConfig.viewModal.component data={selectedItem} />
+          )}
+        </Modal>
+      )}
     </div>
   );
 };

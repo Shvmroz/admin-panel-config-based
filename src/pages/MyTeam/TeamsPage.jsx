@@ -6,6 +6,7 @@ import { mockData } from "../../data/teams";
 import { formatDate } from "../../lib/utils";
 import { Icon } from "@iconify/react";
 import TeamFilters from "./TeamFilters";
+import TeamMemberDetail from "./TeamMemberDetail";
 
 const TeamsPage = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -22,11 +23,6 @@ const TeamsPage = () => {
     }, 500);
   }, []);
 
-  const handleView = (item) => {
-    enqueueSnackbar(`No detail available right now`, {
-      variant: "info",
-    });
-  };
 
   const handleSubmit = async (formData, selectedItem) => {
     setFormLoading(true);
@@ -337,6 +333,14 @@ const TeamsPage = () => {
         color: "error",
       },
     },
+    viewModal: {
+      showModal: true,
+      icon: <Eye className="w-6 h-6 text-blue-500" />,
+      title: "Team Member Details",
+      size: "lg",
+      component: TeamMemberDetail,
+      hideFooter: false,
+    },
   };
 
   const filterConfig = {
@@ -349,7 +353,6 @@ const TeamsPage = () => {
     buttonText: "Add New Member",
     data: filteredData,
     loading,
-    onView: handleView,
     onSubmit: handleSubmit,
     onDelete: handleDelete,
     onFilterApply: setFilters,
