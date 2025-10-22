@@ -1,16 +1,18 @@
 import React, { useState } from "react";
-import { Plus, Filter } from "lucide-react";
+import { Plus, Filter, AlertTriangle } from "lucide-react";
 import Table from "./Table";
 import Modal from "./Modal";
 import Form from "./Form";
 import Button from "./Button";
 import FilterDrawer from "./Filter/FilterDrawer";
+import { Icon } from "@iconify/react";
 
-const CrudPage = ({ config, formLoading = false }) => {
+const CrudPage = ({ config }) => {
   const {
     title,
     data = [],
     loading = false,
+    formLoading = false,
     tableConfig = {},
     formConfig = {},
     modalConfig = {},
@@ -66,7 +68,9 @@ const CrudPage = ({ config, formLoading = false }) => {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             {title}
           </h1>
-          <p className="text-md text-gray-600 dark:text-gray-400 mt-2">{config?.description}</p>
+          <p className="text-md text-gray-600 dark:text-gray-400 mt-2">
+            {config?.description}
+          </p>
         </div>
         <div className="flex items-center space-x-3">
           {filterConfig && (
@@ -110,6 +114,7 @@ const CrudPage = ({ config, formLoading = false }) => {
       <Modal
         isOpen={showAdd}
         onClose={() => setShowAdd(false)}
+        icon={modalConfig.addModal?.icon}
         title={
           modalConfig.addModal?.title ||
           `Add ${title.replace(" Management", "")}`
@@ -138,6 +143,7 @@ const CrudPage = ({ config, formLoading = false }) => {
       <Modal
         isOpen={showEdit}
         onClose={() => setShowEdit(false)}
+        icon={modalConfig.editModal?.icon}
         title={
           modalConfig.editModal?.title ||
           `Edit ${title.replace(" Management", "")}`
@@ -168,28 +174,20 @@ const CrudPage = ({ config, formLoading = false }) => {
       <Modal
         isOpen={showDelete}
         onClose={() => setShowDelete(false)}
-        title="Confirm Delete"
-        size="sm"
+        icon={modalConfig.deleteModal?.icon}
+        title={modalConfig.deleteModal?.title || "Confirm Delete"}
+        size={modalConfig.deleteModal?.size || "md"}
+        footerConfig={modalConfig.deleteModal?.footer}
+        onFormSubmit={handleDeleteConfirm}
+        onCancel={() => setShowDelete(false)}
+        loading={formLoading}
       >
-        <div className="text-center py-4">
-          <p className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-            Are you sure you want to delete this item?
-          </p>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            "{selectedItem?.name || selectedItem?.email}" will be permanently
-            removed.
-          </p>
-          <div className="flex justify-end space-x-3">
-            <Button onClick={() => setShowDelete(false)} variant="outlined">
-              Cancel
-            </Button>
-            <Button
-              onClick={handleDeleteConfirm}
-              disabled={formLoading}
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
-              {formLoading ? "Deleting..." : "Delete"}
-            </Button>
+        <div className="flex items-center space-x-2 py-3">
+          <div>
+            <p className="text-md text-gray-700 dark:text-white">
+              {modalConfig.deleteModal?.confirmText ||
+                "Are you sure you want to delete this item?"}
+            </p>
           </div>
         </div>
       </Modal>

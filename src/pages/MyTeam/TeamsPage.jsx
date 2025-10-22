@@ -4,6 +4,7 @@ import { Eye, Pencil, Trash2, User } from "lucide-react";
 import CrudPage from "../../components/CrudPage";
 import { mockData } from "../../data/teams";
 import { formatDate } from "../../lib/utils";
+import { Icon } from "@iconify/react";
 
 const TeamsPage = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -54,6 +55,7 @@ const TeamsPage = () => {
   };
 
   const handleDelete = async (selectedItem) => {
+    setFormLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -61,6 +63,8 @@ const TeamsPage = () => {
       enqueueSnackbar("User deleted successfully", { variant: "success" });
     } catch (error) {
       enqueueSnackbar("Delete failed", { variant: "error" });
+    } finally {
+      setFormLoading(false);
     }
   };
 
@@ -82,8 +86,6 @@ const TeamsPage = () => {
   const handleSearch = async (searchTerm) => {
     console.log("API search called with:", searchTerm);
   };
-
- 
 
   const tableConfig = {
     columns: [
@@ -193,7 +195,7 @@ const TeamsPage = () => {
         icon: <Eye className="w-4 h-4" />,
       },
       {
-        title: "Delete Team Member",
+        title: "Delete",
         type: "delete",
         variant: "danger",
         icon: <Trash2 className="w-4 h-4" />,
@@ -203,7 +205,6 @@ const TeamsPage = () => {
       enabled: true,
       placeholder: "Search...",
       useLocalSearch: true,
-      searchableColumns: ["name", "email", "department"],
     },
     pagination: { enabled: true, pageSize: 10 },
     onSearch: handleSearch,
@@ -211,6 +212,7 @@ const TeamsPage = () => {
 
   const modalConfig = {
     addModal: {
+      icon: <Icon icon="material-symbols:add-rounded" className="w-6 h-6" />,
       title: "Add New Team Member",
       formFields: {
         config: [
@@ -269,6 +271,7 @@ const TeamsPage = () => {
       },
     },
     editModal: {
+      icon: <Icon icon="circum:edit" className="w-6 h-6" />,
       title: "Edit Member",
       formFields: {
         config: [
@@ -320,6 +323,19 @@ const TeamsPage = () => {
         cancelText: "Cancel",
       },
     },
+    deleteModal: {
+      icon: <Icon icon="ph:warning-bold" className="w-6 h-6 text-red-500" />,
+      title: "Confirm Delete",
+      size: "md",
+      confirmText: "Are you sure you want to delete this member?",
+      footer: {
+        submitButton: true,
+        submitText: "Delete",
+        cancelButton: true,
+        cancelText: "Cancel",
+        color: "error",
+      },
+    },
   };
 
   const filterConfig = {
@@ -361,9 +377,10 @@ const TeamsPage = () => {
     tableConfig,
     modalConfig,
     filterConfig,
+    formLoading,
   };
 
-  return <CrudPage config={config} formLoading={formLoading} />;
+  return <CrudPage config={config} />;
 };
 
 export default TeamsPage;

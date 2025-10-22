@@ -1,8 +1,5 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { cn } from "../lib/utils";
-
+import { useLocation, Link } from "react-router-dom";
 import { Chrome as Home, UserCog } from "lucide-react";
 
 const menuItems = [
@@ -30,11 +27,6 @@ const Sidebar = ({ open, onClose, variant = "temporary" }) => {
     <div className="h-full flex flex-col bg-white dark:bg-gray-900 shadow-xl border-r border-gray-200 dark:border-gray-700">
       <Link to="/dashboard">
         <div className="cursor-pointer h-16 pl-8 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-3">
-          {/* <img 
-            src="/assets/logo.png" 
-            alt="Logo" 
-            className="w-8 h-8 object-contain"
-          /> */}
           <h1 className="text-gray-900 dark:text-white text-2xl font-bold leading-tight mt-1">
             CRUD Manager
           </h1>
@@ -51,12 +43,11 @@ const Sidebar = ({ open, onClose, variant = "temporary" }) => {
               key={item.text}
               to={item.path}
               onClick={variant === "temporary" ? onClose : undefined}
-              className={cn(
-                "flex items-center space-x-3 px-4 py-2 rounded-lg transition-all duration-200 group",
+              className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-all duration-200 group ${
                 isActive
                   ? "bg-sky-100 dark:bg-sky-800/20 text-sky-900 dark:text-gray-200 shadow-sm"
                   : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 hover:scale-102"
-              )}
+              }`}
             >
               <div
                 className={`p-1.5 rounded-md transition-colors duration-200 ${
@@ -95,10 +86,9 @@ const Sidebar = ({ open, onClose, variant = "temporary" }) => {
       )}
 
       <div
-        className={cn(
-          "fixed inset-y-0 left-0 w-80 z-50 lg:hidden",
+        className={`fixed inset-y-0 left-0 w-80 z-50 lg:hidden ${
           open ? "block" : "hidden"
-        )}
+        }`}
       >
         {sidebarContent}
       </div>

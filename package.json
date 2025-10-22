@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@iconify/react": "^6.0.2",
     "axios": "^1.11.0",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",

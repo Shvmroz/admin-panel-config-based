@@ -6,7 +6,7 @@ import {
   EllipsisVertical,
 } from "lucide-react";
 import { createPortal } from "react-dom";
-import { searchData } from "../lib/searchUtils";
+import { searchLocalData } from "../lib/utils";
 
 const Table = ({ config }) => {
   const {
@@ -53,11 +53,8 @@ const Table = ({ config }) => {
   const filteredData = useMemo(() => {
     if (!search.enabled || !searchTerm.trim()) return data;
     if (!search.useLocalSearch) return data;
-
-    const searchableColumns =
-      search.searchableColumns || columns.map((col) => col.key);
-    return searchData(data, searchTerm, searchableColumns);
-  }, [data, searchTerm, columns, search]);
+    return searchLocalData(data, searchTerm);
+  }, [data, searchTerm, search]);
 
   const paginatedData = useMemo(() => {
     if (!pagination.enabled) return filteredData;
@@ -318,7 +315,7 @@ const Table = ({ config }) => {
                 }
                 className={`w-full flex items-center gap-2 px-4 py-2 text-sm text-left hover:bg-gray-100 dark:hover:bg-gray-600 ${
                   action.variant === "danger"
-                    ? "text-red-600 dark:text-red-400"
+                    ? "text-red-600 dark:text-red-500"
                     : "text-gray-700 dark:text-gray-200"
                 }`}
               >

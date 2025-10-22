@@ -1,10 +1,9 @@
 import React from "react";
-import { cn } from "@/lib/utils";
 
 const Button = React.forwardRef(
   (
     {
-      className,
+      className = "",
       variant = "contained",
       color = "default",
       size = "default",
@@ -60,17 +59,19 @@ const Button = React.forwardRef(
       colorVariants[color]?.[variant] || colorVariants.default.contained;
     const sizeStyles = sizes[size];
 
+    const combinedClassName = `
+      ${baseStyles} 
+      ${colorStyles} 
+      ${sizeStyles} 
+      ${fullWidth ? "w-full" : ""} 
+      ${className}
+    `.trim();
+
     return (
       <button
         ref={ref}
         type={props.type || "button"}
-        className={cn(
-          baseStyles,
-          colorStyles,
-          sizeStyles,
-          fullWidth && "w-full",
-          className
-        )}
+        className={combinedClassName}
         {...props}
       >
         {children}
