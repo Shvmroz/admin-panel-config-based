@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppContext } from "../contexts/AppContext";
 import { useNavigate } from "react-router-dom";
-import { Menu, Sun, Moon, User, LogOut } from "lucide-react";
+import { Menu, Sun, Moon, User, LogOut, Settings } from "lucide-react";
 
 const Topbar = ({ onMenuClick }) => {
   const { user, logout, darkMode, toggleDarkMode } = useAppContext();
@@ -62,6 +62,16 @@ const Topbar = ({ onMenuClick }) => {
                 onClick={() => setShowUserMenu(false)}
               />
               <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800 py-2 z-50">
+                <button
+                  onClick={() => {
+                    navigate("/profile-settings");
+                    setShowUserMenu(false);
+                  }}
+                  className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <Settings className="w-4 h-4" />
+                  <span>Profile Settings</span>
+                </button>
                 <button
                   onClick={handleLogout}
                   className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700"
