@@ -5,6 +5,7 @@ import CrudPage from "../../components/CrudPage";
 import { mockData } from "../../data/teams";
 import { formatDate } from "../../lib/utils";
 import { Icon } from "@iconify/react";
+import TeamFilters from "./TeamFilters";
 
 const TeamsPage = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -339,29 +340,7 @@ const TeamsPage = () => {
   };
 
   const filterConfig = {
-    fields: [
-      {
-        key: "status",
-        label: "Status",
-        type: "select",
-        options: [
-          { value: "active", label: "Active" },
-          { value: "inactive", label: "Inactive" },
-          { value: "pending", label: "Pending" },
-        ],
-      },
-      {
-        key: "role",
-        label: "Role",
-        type: "select",
-        options: [
-          { value: "admin", label: "Super Administrator" },
-          { value: "moderator", label: "Moderator" },
-          { value: "editor", label: "Editor" },
-          { value: "viewer", label: "Viewer" },
-        ],
-      },
-    ],
+    component: TeamFilters,
   };
 
   const config = {
