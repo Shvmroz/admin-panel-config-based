@@ -46,7 +46,7 @@ const Sidebar = ({ open, onClose, variant = "temporary" }) => {
               className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-all duration-200 group ${
                 isActive
                   ? "bg-sky-100 dark:bg-sky-800/20 text-sky-900 dark:text-gray-200 shadow-sm"
-                  : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 hover:scale-102"
+                  : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:scale-102"
               }`}
             >
               <div
