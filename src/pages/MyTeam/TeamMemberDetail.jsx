@@ -63,7 +63,11 @@ const TeamMemberDetail = ({ data }) => {
               : data.role
           }
         />
-        <DetailRow icon={Briefcase} label="Department" value={data.department} />
+        <DetailRow
+          icon={Briefcase}
+          label="Department"
+          value={data.department}
+        />
         <DetailRow
           icon={Calendar}
           label="Created Date"

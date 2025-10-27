@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Plus, Filter, AlertTriangle } from "lucide-react";
+import { Plus, Filter } from "lucide-react";
 import Table from "./Table";
 import Modal from "./Modal";
 import Form from "./Form";
 import Button from "./Button";
 import FilterDrawer from "./Filter/FilterDrawer";
-import { Icon } from "@iconify/react";
 
 const CrudPage = ({ config }) => {
   const {
@@ -14,11 +13,9 @@ const CrudPage = ({ config }) => {
     loading = false,
     formLoading = false,
     tableConfig = {},
-    formConfig = {},
     modalConfig = {},
     filterConfig = null,
     onDelete,
-    onView,
     onSubmit,
     onFilterApply,
   } = config;
@@ -35,12 +32,8 @@ const CrudPage = ({ config }) => {
       setSelectedItem(item);
       setShowEdit(true);
     } else if (action === "view") {
-      if (modalConfig.viewModal?.showModal) {
-        setSelectedItem(item);
-        setShowView(true);
-      } else {
-        onView?.(item);
-      }
+      setSelectedItem(item);
+      setShowView(true);
     } else if (action === "delete") {
       setSelectedItem(item);
       setShowDelete(true);
@@ -121,10 +114,7 @@ const CrudPage = ({ config }) => {
         isOpen={showAdd}
         onClose={() => setShowAdd(false)}
         icon={modalConfig.addModal?.icon}
-        title={
-          modalConfig.addModal?.title ||
-          `Add ${title.replace(" Management", "")}`
-        }
+        title={modalConfig.addModal?.title || "Add New"}
         size={modalConfig.addModal?.size || "md"}
         footerConfig={modalConfig.addModal?.footer}
         onFormSubmit={() => document.querySelector("#addForm")?.requestSubmit()}
@@ -132,13 +122,7 @@ const CrudPage = ({ config }) => {
         loading={formLoading}
       >
         <Form
-          config={{
-            fields:
-              modalConfig.addModal?.formFields?.config ||
-              formConfig.add?.fields ||
-              [],
-            id: "addForm",
-          }}
+          config={modalConfig?.addModal || []}
           onSubmit={handleFormSubmit}
           initialData={{}}
           loading={formLoading}
@@ -150,10 +134,7 @@ const CrudPage = ({ config }) => {
         isOpen={showEdit}
         onClose={() => setShowEdit(false)}
         icon={modalConfig.editModal?.icon}
-        title={
-          modalConfig.editModal?.title ||
-          `Edit ${title.replace(" Management", "")}`
-        }
+        title={modalConfig.editModal?.title || "Edit"}
         size={modalConfig.editModal?.size || "md"}
         footerConfig={modalConfig.editModal?.footer}
         onFormSubmit={() =>
@@ -163,13 +144,7 @@ const CrudPage = ({ config }) => {
         loading={formLoading}
       >
         <Form
-          config={{
-            fields:
-              modalConfig.editModal?.formFields?.config ||
-              formConfig.edit?.fields ||
-              [],
-            id: "editForm",
-          }}
+          config={modalConfig.editModal || []}
           onSubmit={handleFormSubmit}
           initialData={selectedItem}
           loading={formLoading}
@@ -199,7 +174,7 @@ const CrudPage = ({ config }) => {
       </Modal>
 
       {/* View Detail Modal */}
-      {modalConfig.viewModal?.showModal && (
+      {modalConfig.viewModal && (
         <Modal
           isOpen={showView}
           onClose={() => {
@@ -209,8 +184,7 @@ const CrudPage = ({ config }) => {
           icon={modalConfig.viewModal?.icon}
           title={modalConfig.viewModal?.title || "View Details"}
           size={modalConfig.viewModal?.size || "lg"}
-          hideFooter={modalConfig.viewModal?.hideFooter ?? false}
-          showDefaultClose={!modalConfig.viewModal?.hideFooter}
+          footerConfig={modalConfig?.viewModal.footer}
         >
           {modalConfig.viewModal?.component && (
             <modalConfig.viewModal.component data={selectedItem} />

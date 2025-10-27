@@ -68,7 +68,7 @@ export const AppProvider = ({ children }) => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Example hardcoded user object (same structure as STATIC_USERS)
-      if (email === "admin@gmail.com" && password === "admin@gmail.com") {
+      if (email === "admin@crud.com" && password === "admin@crud.com") {
         const userWithoutPassword = {
           id: 1,
           email,

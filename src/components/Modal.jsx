@@ -44,7 +44,7 @@ const Modal = ({
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {icon && <span>{icon}</span>}
             <h3 className="text-lg font-medium text-gray-900 dark:text-white">
               {title}

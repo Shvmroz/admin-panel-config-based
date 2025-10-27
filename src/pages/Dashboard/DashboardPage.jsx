@@ -3,8 +3,8 @@ import {
   TrendingUp,
   DollarSign,
   CreditCard,
-  User,
-  UserCog,
+  Users,
+  ShieldCheck,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -18,36 +18,34 @@ const dashboardData = {
   },
 };
 
-const MetricCard = ({ title, value, icon, color, bgColor, onClick }) => (
+const MetricCard = ({ title, value, icon, color, bgColor, onClick, bg }) => (
   <div
     onClick={onClick}
-    className={`${bgColor} dark:bg-gray-800 rounded-xl px-6 py-3 shadow-sm hover:shadow-lg cursor-pointer relative overflow-hidden group`}
- 
+    className={`${bgColor} dark:bg-gray-900 rounded-xl p-0 shadow-sm hover:shadow-lg cursor-pointer overflow-hidden group transition-all duration-300`}
   >
-    <div className="absolute top-1 right-1 w-20 h-20 opacity-10">
-      {React.cloneElement(icon, {
-        className: `w-full h-full ${color}`,
-      })}
+    {/* Top header bar */}
+    <div className="">
+      <div className={`flex items-center gap-2 p-1 px-2 ${bg}`}>
+        <div className={`${color}`}>{icon}</div>
+        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          {title}
+        </p>
+      </div>
     </div>
 
-    <div className="flex items-start justify-between relative z-10">
-      <div className="flex-1">
-        <div className="flex items-center space-x-3 mb-4">
-          <div className={color}>{icon}</div>
-          <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">
-            {title}
-          </p>
-        </div>
-        <div className="space-y-2">
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">
-            {typeof value === "number" ? value.toLocaleString() : value}
-          </p>
-        </div>
+    {/* Main value section */}
+    <div className="p-5 relative">
+      <div className="absolute top-1 right-1 w-16 h-16 opacity-10 dark:opacity-20">
+        {React.cloneElement(icon, {
+          className: `w-full h-full ${color}`,
+        })}
       </div>
+      <p className="text-3xl font-bold text-gray-900 dark:text-white">
+        {typeof value === "number" ? value.toLocaleString() : value}
+      </p>
     </div>
   </div>
 );
-
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -57,17 +55,19 @@ const DashboardPage = () => {
     {
       title: "Total Users",
       value: data.total_users,
-      icon: <User className="w-5 h-5" />,
+      icon: <Users className="w-5 h-5" />,
       color: "text-blue-600",
-      bgColor: "bg-blue-50 dark:bg-blue-900/20",
+      bgColor: "bg-sky-50 dark:bg-sky-900/30",
+      bg: "bg-sky-100 dark:bg-sky-900/50",
       path: "/users",
     },
     {
       title: "Total Admins",
       value: data.total_admins,
-      icon: <UserCog className="w-5 h-5" />,
+      icon: <ShieldCheck className="w-5 h-5" />,
       color: "text-purple-600",
-      bgColor: "bg-purple-50 dark:bg-purple-900/20",
+      bgColor: "bg-purple-50 dark:bg-purple-900/30",
+      bg: "bg-purple-100 dark:bg-purple-900/50",
       path: "/admins",
     },
     {
@@ -75,7 +75,8 @@ const DashboardPage = () => {
       value: data.active_subscriptions,
       icon: <CreditCard className="w-5 h-5" />,
       color: "text-indigo-600",
-      bgColor: "bg-indigo-50 dark:bg-indigo-900/20",
+      bgColor: "bg-indigo-50 dark:bg-indigo-900/30",
+      bg: "bg-indigo-100 dark:bg-indigo-900/50",
       path: "/subscriptions",
     },
     {
@@ -83,7 +84,8 @@ const DashboardPage = () => {
       value: `$${data.monthly_revenue.toLocaleString()}`,
       icon: <TrendingUp className="w-5 h-5" />,
       color: "text-orange-600",
-      bgColor: "bg-orange-50 dark:bg-orange-900/20",
+      bgColor: "bg-orange-50 dark:bg-orange-900/30",
+      bg: "bg-orange-100 dark:bg-orange-900/50",
       path: "/reports",
     },
     {
@@ -91,7 +93,8 @@ const DashboardPage = () => {
       value: `$${data.total_revenue.toLocaleString()}`,
       icon: <DollarSign className="w-5 h-5" />,
       color: "text-emerald-600",
-      bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
+      bgColor: "bg-emerald-50 dark:bg-emerald-900/30",
+      bg: "bg-emerald-100 dark:bg-emerald-900/50",
       path: "/reports",
     },
   ];

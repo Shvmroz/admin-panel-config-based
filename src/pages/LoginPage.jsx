@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Mail, Lock, Calendar } from "lucide-react";
+import {Mail, Lock } from "lucide-react";
 import { useAppContext } from "../contexts/AppContext";
 import { Input } from "../components/Input";
 import Button from "../components/Button";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("admin@crud.com");
+  const [password, setPassword] = useState("admin@crud.com");
   const [isLoading, setIsLoading] = useState(false);
 
   const { login } = useAppContext();
@@ -25,10 +24,47 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-blue-200 to-blue-50 dark:from-gray-900 dark:to-gray-800">
       <div className="min-h-screen grid grid-cols-1 lg:grid-cols-12">
         <div className="hidden lg:flex lg:col-span-6 items-center justify-center p-8 lg:p-16">
           {/* add left side designs here */}
+          <div className="text-left">
+            <h1 className="text-4xl font-extrabold tracking-tight text-blue-500">
+              CRUD Manager
+            </h1>
+
+            <p className="text-lg text-gray-500 leading-relaxed mt-4">
+              Effortlessly manage your application data through{" "}
+              <span className="font-semibold text-blue-400">
+                config-based components
+              </span>
+              .
+            </p>
+
+            <div className="mt-8">
+              <h3 className="text-xl font-semibold text-gray-500 mb-3">
+                Features
+              </h3>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li className="flex items-center gap-2">
+                  <span className="text-blue-400">✔</span>
+                  <span>Config-driven CRUD operations</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-blue-400">✔</span>
+                  <span>Dynamic table & form rendering</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-blue-400">✔</span>
+                  <span>Seamless API integration</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-blue-400">✔</span>
+                  <span>Built with React & Tailwind</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
 
         <div className="col-span-12 lg:col-span-6 flex items-center justify-center p-8">
@@ -42,14 +78,7 @@ export default function LoginPage() {
                   Sign in to your admin account
                 </p>
               </div>
-              <div className="my-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg flex items-center gap-3">
-                <span className="text-sm text-yellow-800 dark:text-yellow-200 ">
-                  Email & Password:
-                </span>
-                <span className="text-sm text-yellow-700 dark:text-blyellowue-300">
-                  admin@gmail.com
-                </span>
-              </div>
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label
@@ -60,7 +89,7 @@ export default function LoginPage() {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Mail className="h-5 w-5 text-gray-400" />
+                      <Mail className="h-5 w-5 text-gray-400 z-10" />
                     </div>
                     <Input
                       id="email"
@@ -85,12 +114,12 @@ export default function LoginPage() {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Lock className="h-5 w-5 text-gray-400" />
+                      <Lock className="h-5 w-5 text-gray-400 z-10" />
                     </div>
                     <Input
                       id="password"
                       name="password"
-                      type={showPassword ? "text" : "password"}
+                      type="password"
                       autoComplete="current-password"
                       required
                       value={password}
@@ -98,16 +127,6 @@ export default function LoginPage() {
                       className="block w-full pl-10 pr-12 py-3"
                       placeholder="Enter your password"
                     />
-                    <span
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
-                      ) : (
-                        <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
-                      )}
-                    </span>
                   </div>
                 </div>
 

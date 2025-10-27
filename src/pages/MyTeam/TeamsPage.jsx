@@ -23,7 +23,6 @@ const TeamsPage = () => {
     }, 500);
   }, []);
 
-
   const handleSubmit = async (formData, selectedItem) => {
     setFormLoading(true);
     try {
@@ -182,7 +181,7 @@ const TeamsPage = () => {
     ],
     actions: [
       {
-        title: "Edit Team Member",
+        title: "Edit",
         type: "edit",
         icon: <Pencil className="w-4 h-4" />,
       },
@@ -212,51 +211,48 @@ const TeamsPage = () => {
       icon: <Icon icon="material-symbols:add-rounded" className="w-6 h-6" />,
       title: "Add New Team Member",
       formFields: {
+        gridClass: "grid grid-cols-12 gap-4",
         config: [
-          { key: "name", label: "Full Name", type: "text", required: true },
+          {
+            key: "firstName",
+            label: "First Name",
+            type: "text",
+            required: true,
+            colClass: "col-span-12 sm:col-span-6",
+          },
+          {
+            key: "lastName",
+            label: "Last Name",
+            type: "text",
+            required: true,
+            colClass: "col-span-12 sm:col-span-6",
+          },
           {
             key: "email",
-            label: "Email Address",
+            label: "Email",
             type: "email",
             required: true,
+            colClass: "col-span-12 sm:col-span-6",
           },
           {
             key: "password",
             label: "Password",
             type: "password",
             required: true,
+            colClass: "col-span-12 sm:col-span-6",
           },
           {
-            key: "status",
-            label: "Status",
-            type: "select",
-            required: true,
-            options: [
-              { value: "active", label: "Active" },
-              { value: "inactive", label: "Inactive" },
-              { value: "pending", label: "Pending Activation" },
-            ],
+            key: "phone",
+            label: "Phone",
+            type: "text",
+            colClass: "col-span-12 sm:col-span-6",
           },
-          {
-            key: "role",
-            label: "Role",
-            type: "select",
-            required: true,
-            options: [
-              { value: "admin", label: "Super Administrator" },
-              { value: "moderator", label: "Moderator" },
-              { value: "editor", label: "Editor" },
-              { value: "viewer", label: "Viewer" },
-            ],
-          },
-          { key: "phone", label: "Phone Number", type: "tel" },
-          { key: "department", label: "Department", type: "text" },
           {
             key: "bio",
-            label: "Bio / Notes",
+            label: "Bio",
             type: "textarea",
             rows: 3,
-            placeholder: "Additional information about this user...",
+            colClass: "col-span-12",
           },
         ],
       },
@@ -267,23 +263,40 @@ const TeamsPage = () => {
         cancelText: "Cancel",
       },
     },
+
     editModal: {
       icon: <Icon icon="circum:edit" className="w-6 h-6" />,
       title: "Edit Member",
       formFields: {
+        gridClass: "grid grid-cols-12 gap-4",
         config: [
-          { key: "name", label: "Full Name", type: "text", required: true },
+          {
+            key: "firstName",
+            label: "First Name",
+            type: "text",
+            required: true,
+            colClass: "col-span-12 sm:col-span-6",
+          },
+          {
+            key: "lastName",
+            label: "Last Name",
+            type: "text",
+            required: true,
+            colClass: "col-span-12 sm:col-span-6",
+          },
           {
             key: "email",
             label: "Email Address",
             type: "email",
             required: true,
+            colClass: "col-span-12 sm:col-span-6",
           },
           {
             key: "status",
             label: "Status",
             type: "select",
             required: true,
+            colClass: "col-span-12 sm:col-span-6",
             options: [
               { value: "active", label: "Active" },
               { value: "inactive", label: "Inactive" },
@@ -294,7 +307,9 @@ const TeamsPage = () => {
             key: "role",
             label: "Role",
             type: "select",
+            search: true,
             required: true,
+            colClass: "col-span-12 sm:col-span-6",
             options: [
               { value: "admin", label: "Super Administrator" },
               { value: "moderator", label: "Moderator" },
@@ -302,14 +317,21 @@ const TeamsPage = () => {
               { value: "viewer", label: "Viewer" },
             ],
           },
-          { key: "phone", label: "Phone Number", type: "tel" },
-          { key: "department", label: "Department", type: "text" },
+          {
+            key: "phone",
+            label: "Phone Number",
+            type: "text",
+            required: true,
+            placeholder: "Eg. +923001234567",
+            colClass: "col-span-12 sm:col-span-6",
+          },
           {
             key: "bio",
             label: "Bio / Notes",
             type: "textarea",
             rows: 3,
             placeholder: "Additional information about this member...",
+            colClass: "col-span-12",
           },
         ],
       },
@@ -334,12 +356,14 @@ const TeamsPage = () => {
       },
     },
     viewModal: {
-      showModal: true,
-      icon: <Eye className="w-6 h-6 text-blue-500" />,
+      icon: <Eye className="w-6 h-6" />,
       title: "Team Member Details",
       size: "lg",
       component: TeamMemberDetail,
-      hideFooter: false,
+      footer: {
+        cancelButton: true,
+        cancelText: "Close",
+      },
     },
   };
 
