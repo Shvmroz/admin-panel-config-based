@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Input } from "./Input";
-import Select from "./Select"; // ✅ import your custom Select
+import Select from "./Select";
+import { X } from "lucide-react";
 
 const Form = ({ config, onSubmit, initialData = {}, loading = false }) => {
   const {
@@ -20,6 +21,23 @@ const Form = ({ config, onSubmit, initialData = {}, loading = false }) => {
   const handleChange = (key, value) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
     if (errors[key]) setErrors((prev) => ({ ...prev, [key]: null }));
+  };
+
+  const handleFileChange = (key, files) => {
+    const file = files[0];
+    if (!file) return;
+
+    const preview = URL.createObjectURL(file);
+    setFormData((prev) => ({
+      ...prev,
+      [key]: { file, preview },
+    }));
+
+    if (errors[key]) setErrors((prev) => ({ ...prev, [key]: null }));
+  };
+
+  const handleRemoveImage = (key) => {
+    setFormData((prev) => ({ ...prev, [key]: null }));
   };
 
   const validateForm = () => {
@@ -54,16 +72,17 @@ const Form = ({ config, onSubmit, initialData = {}, loading = false }) => {
       rows,
       inputClass,
       search,
+      accept,
+      
     } = field;
     const value = formData[key] || "";
-  
-    // ✅ If placeholder provided in config, use it; otherwise, use fallback
+
     const finalPlaceholder =
       placeholder || (type === "select" ? `Select ${label}` : `Enter ${label}`);
-  
+
     const baseClass =
       "w-full px-3 py-2 rounded-md border text-sm focus:outline-none focus:ring-1 focus:ring-blue-200 bg-white text-black border-gray-300 dark:bg-gray-700 dark:text-white dark:border-gray-600";
-  
+
     switch (type) {
       case "select":
         return (
@@ -77,7 +96,7 @@ const Form = ({ config, onSubmit, initialData = {}, loading = false }) => {
             search={search}
           />
         );
-  
+
       case "textarea":
         return (
           <textarea
@@ -89,7 +108,46 @@ const Form = ({ config, onSubmit, initialData = {}, loading = false }) => {
             disabled={loading}
           />
         );
-  
+
+      case "file":
+      case "image":
+        const image = formData[key];
+
+        return (
+
+          <div className="flex flex-col items-center justify-center space-y-2">
+            {!image ? (
+              <label className="flex flex-col items-center justify-center h-28 w-full border border-dashed border-gray-300 dark:border-gray-500 rounded-md text-sm text-gray-500 dark:text-gray-400 cursor-pointer hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 transition">
+                <input
+                  type="file"
+                  accept={accept || "image/*"}
+                  className="hidden"
+                  onChange={(e) => handleFileChange(key, e.target.files)}
+                  disabled={loading}
+                />
+                <span className="text-center text-xs">
+                  Click to upload image
+                </span>
+              </label>
+            ) : (
+              <div className="relative w-28 h-28 rounded-md overflow-hidden border border-gray-200 dark:border-gray-600 flex items-center justify-center">
+                <img
+                  src={image.preview || image}
+                  alt="preview"
+                  className="object-cover w-full h-full"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveImage(key)}
+                  className="absolute top-0 right-0 bg-red-600/70 hover:bg-red-700/70 text-white text-xs rounded-md w-5 h-5 flex items-center justify-center "
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </div>
+        );
+
       default:
         return (
           <Input
@@ -114,7 +172,7 @@ const Form = ({ config, onSubmit, initialData = {}, loading = false }) => {
         <div key={field.key} className={field.colClass || "col-span-12"}>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             {field.label}
-            {field.required && <span className=" ml-1">*</span>}
+            {field.required && <span className="ml-1">*</span>}
           </label>
           {renderField(field)}
           {errors[field.key] && (

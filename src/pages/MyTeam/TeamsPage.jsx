@@ -40,7 +40,6 @@ const TeamsPage = () => {
           ...formData,
           id: Math.max(...data.map((d) => d.id), 0) + 1,
           createdAt: new Date().toISOString().split("T")[0],
-          lastLogin: "Never",
         };
         setData((prev) => [newItem, ...prev]);
         enqueueSnackbar("User added successfully", { variant: "success" });
@@ -84,7 +83,7 @@ const TeamsPage = () => {
   };
 
   const tableConfig = {
-    columns: [
+    table_head: [
       { key: "id", title: "#" },
       {
         key: "user",
@@ -104,7 +103,7 @@ const TeamsPage = () => {
             )}
             <div>
               <p className="font-medium text-gray-900 dark:text-white">
-                {row.name || "N/A"}
+                {row?.first_name + " " + row?.last_name}
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {row.email || "N/A"}
@@ -151,11 +150,7 @@ const TeamsPage = () => {
           </span>
         ),
       },
-      {
-        key: "lastLogin",
-        title: "Last Login",
-        render: (value) => <span>{formatDate(value)}</span>,
-      },
+
       {
         key: "createdAt",
         title: "Created Date",
@@ -169,9 +164,7 @@ const TeamsPage = () => {
             className={`inline-flex items-center justify-center px-3 py-1 rounded-sm text-xs font-semibold border uppercase max-h-[24px] min-w-[78px] ${
               value === "active"
                 ? "border-green-400 text-green-500 dark:border-green-600 dark:text-green-500"
-                : value === "inactive"
-                ? "border-red-400 text-red-500 dark:border-red-600 dark:text-red-500"
-                : "border-yellow-400 text-yellow-500 dark:border-yellow-600 dark:text-yellow-500"
+                : "border-red-400 text-red-500 dark:border-red-600 dark:text-red-500"
             }`}
           >
             {value}
@@ -210,18 +203,19 @@ const TeamsPage = () => {
     addModal: {
       icon: <Icon icon="material-symbols:add-rounded" className="w-6 h-6" />,
       title: "Add New Team Member",
+      size: "lg",
       formFields: {
         gridClass: "grid grid-cols-12 gap-4",
         config: [
           {
-            key: "firstName",
+            key: "first_name",
             label: "First Name",
             type: "text",
             required: true,
             colClass: "col-span-12 sm:col-span-6",
           },
           {
-            key: "lastName",
+            key: "last_name",
             label: "Last Name",
             type: "text",
             required: true,
@@ -267,18 +261,26 @@ const TeamsPage = () => {
     editModal: {
       icon: <Icon icon="circum:edit" className="w-6 h-6" />,
       title: "Edit Member",
+      size: "lg",
       formFields: {
         gridClass: "grid grid-cols-12 gap-4",
         config: [
           {
-            key: "firstName",
+            key: "image",
+            label: "Profile Image",
+            type: "image",
+            required: false,
+            colClass: "col-span-12",
+          },
+          {
+            key: "first_name",
             label: "First Name",
             type: "text",
             required: true,
             colClass: "col-span-12 sm:col-span-6",
           },
           {
-            key: "lastName",
+            key: "last_name",
             label: "Last Name",
             type: "text",
             required: true,
@@ -300,7 +302,6 @@ const TeamsPage = () => {
             options: [
               { value: "active", label: "Active" },
               { value: "inactive", label: "Inactive" },
-              { value: "pending", label: "Pending Activation" },
             ],
           },
           {

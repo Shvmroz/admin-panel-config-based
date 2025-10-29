@@ -11,7 +11,7 @@ import { searchLocalData } from "../lib/utils";
 const Table = ({ config }) => {
   const {
     data = [],
-    columns = [],
+    table_head = [],
     actions = [],
     loading = false,
     search = { enabled: false, useLocalSearch: true },
@@ -86,7 +86,7 @@ const Table = ({ config }) => {
 
     const openUp =
       viewportHeight - rect.bottom < menuHeight && rect.top > menuHeight;
-    const top = openUp ? rect.top - menuHeight - 8 : rect.bottom + 8;
+    const top = openUp ? rect.top - menuHeight - 2 : rect.bottom + 2;
 
     setMenuPosition({
       top: Math.max(8, Math.min(top, viewportHeight - menuHeight - 8)),
@@ -95,6 +95,18 @@ const Table = ({ config }) => {
 
     setActiveMenu(activeMenu === itemId ? null : itemId);
   };
+
+  // Close menu on scroll -------------------
+  useEffect(() => {
+    const handleScroll = () => {
+      if (activeMenu) setActiveMenu(null);
+    };
+
+    window.addEventListener("scroll", handleScroll, true);
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [activeMenu]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -124,9 +136,9 @@ const Table = ({ config }) => {
         <table className="min-w-full divide-y divide-gray-100 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
-              {columns.map((col) => (
+              {table_head.map((row) => (
                 <th
-                  key={col.key}
+                  key={row.key}
                   className="px-6 py-4 text-left text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider"
                 >
                   <div className="h-3 bg-gray-100 dark:bg-gray-700 w-24 rounded"></div>
@@ -143,7 +155,7 @@ const Table = ({ config }) => {
           <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-700">
             {Array.from({ length: pagination.pageSize || 5 }).map((_, i) => (
               <tr key={i}>
-                {columns.map((col, idx) => (
+                {table_head.map((row, idx) => (
                   <td key={idx} className="px-6 py-5">
                     <div className="h-4 bg-gray-50 dark:bg-gray-800 w-full rounded"></div>
                   </td>
@@ -199,19 +211,19 @@ const Table = ({ config }) => {
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-700/60">
             <tr>
-              {columns.map((col) => (
-                <th
-                  key={col.key}
-                  className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider min-w-max max-w-[180px] truncate"
-                >
-                  {col.title}
-                </th>
-              ))}
               {actions.length > 0 && (
                 <th className="px-6 py-4 text-right text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                   Actions
                 </th>
               )}
+              {table_head.map((row) => (
+                <th
+                  key={row.key}
+                  className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-300 uppercase tracking-wider min-w-max max-w-[180px] truncate"
+                >
+                  {row.title}
+                </th>
+              ))}
             </tr>
           </thead>
 
@@ -219,7 +231,7 @@ const Table = ({ config }) => {
             {paginatedData.length === 0 ? (
               <tr>
                 <td
-                  colSpan={columns.length + (actions.length > 0 ? 1 : 0)}
+                  colSpan={table_head.length + (actions.length > 0 ? 1 : 0)}
                   className="text-center py-10 text-gray-500 dark:text-gray-400"
                 >
                   {emptyMessage}
@@ -229,30 +241,31 @@ const Table = ({ config }) => {
               paginatedData.map((item, index) => (
                 <tr
                   key={item.id || index}
-                  className="hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition"
                 >
-                  {columns.map((col) => (
-                    <td
-                      key={col.key}
-                      className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 min-w-max max-w-[300px] truncate"
-                      title={item[col.key]}
-                    >
-                      {col.render
-                        ? col.render(item[col.key], item)
-                        : item[col.key]}
-                    </td>
-                  ))}
                   {actions.length > 0 && (
-                    <td className="px-6 py-5 text-right min-w-max max-w-[120px]">
+                    <td className="px-6 py-5 text-center min-w-max max-w-[120px]">
                       <button
                         ref={(el) => (buttonRefs.current[item.id] = el)}
                         onClick={(e) => handleMenuToggle(item.id, e)}
-                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-md transition text-gray-500 dark:text-gray-300"
+                        className="p-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full transition text-gray-700 dark:text-gray-300"
                       >
-                        <EllipsisVertical className="h-5 w-5" />
+                        <EllipsisVertical className="h-4 w-4" />
                       </button>
                     </td>
                   )}
+
+                  {table_head.map((row) => (
+                    <td
+                      key={row.key}
+                      className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 min-w-max max-w-[300px] truncate"
+                      title={item[row.key]}
+                    >
+                      {row.render
+                        ? row.render(item[row.key], item)
+                        : item[row.key]}
+                    </td>
+                  ))}
                 </tr>
               ))
             )}
